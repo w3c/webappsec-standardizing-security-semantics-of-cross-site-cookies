@@ -1,0 +1,32 @@
+<pre class='metadata'>
+Title: Standardizing Cross-Site Cookie Semantics
+Shortname: standizing-cross-site-cookie-semantics
+Level: none
+Status: w3c/UD
+Group: WebAppSec
+Repository: org/repo-name
+URL: http://example.com/url-this-spec-will-live-at
+Editor: Dylan Cutler, Google, dylancutler@google.com, w3cid 56384
+Abstract:
+    Cookies are the de facto standard for authentication on the web and are commonly used by applications to store tokens that carry information about the user's identity and automatically attach them to matching HTTP requests.
+    However, because cookies predate the existence of the web as an application platform, they behave in ways that are known to cause security and privacy problems for the modern web.
+
+    From a privacy perspective, the web's original, long-standing behavior of allowing cookies to be sent in third-party contexts has been recognized as a privacy concern because it allows tracking users across sites as they browse the web.
+
+    From a security perspective, the ability to send requests with cookies to arbitrary cross-site destinations has historically been the root cause of a number of endemic web vulnerability classes, including cross-site request forgery, clickjacking, cross-site script inclusion, and various cross-site leaks.
+
+    As browsers pursue a set of far-reaching efforts to comprehensively block or phase out cookies in third-party contexts (Full Third-Party Cookie Blocking in WebKit, Total Cookie Protection in Firefox, Privacy Sandbox in Chrome), it's important to review the "end state" for cookies that maintains the desired security and privacy properties while maintaining compatibility with the existing web wherever possible.
+    This is particularly important given that browser handling of cookies has diverged in recent years, introducing substantial compatibility problems for web developers.
+
+    This document aims to discuss current approaches and elucidate the cookie semantics that we want the web to have in the long term, focusing on the properties necessary for the web to offer robust web application security guarantees.
+    It also contends with the existence of a variety of mechanisms to re-enable third-party cookies, offering guidance for how they should be implemented without regressing the security posture of the web platform.
+
+Boilerplate: webappsec true
+Markup Shorthands: markdown yes, css no
+</pre>
+
+Introduction {#intro}
+=====================
+
+Introduction here.
+
