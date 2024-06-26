@@ -6,7 +6,9 @@ Status: w3c/UD
 Group: WebAppSec
 Repository: org/repo-name
 URL: http://example.com/url-this-spec-will-live-at
-Editor: Dylan Cutler, Google, dylancutler@google.com, w3cid 56384
+Editor:
+    Dylan Cutler, Google, dylancutler@google.com
+    Artur Janc, Google, aaj@google.com
 Abstract:
     Cookies are the de facto standard for authentication on the web and are commonly used by applications to store tokens that carry information about the user's identity and automatically attach them to matching HTTP requests.
     However, because cookies predate the existence of the web as an application platform, they behave in ways that are known to cause security and privacy problems for the modern web.
@@ -28,5 +30,81 @@ Markup Shorthands: markdown yes, css no
 Introduction {#intro}
 =====================
 
-Introduction here.
+Major browsers have shipped or announced plans to restrict cookies in cross-site contexts to improve the privacy of their users and protect them from [cross-site tracking](https://www.w3.org/mission/privacy/).
+However, the details of which requests are considered cross-site vary between browsers; as a result, browsers' cookie blocking behaviors have subtle differences.
+Because of the importance of cookies to the web platform, and the substantial amount of existing web content and functionality that depends on the presence of cookies in cross-site contexts, it is important to converge on interoperable cookie semantics that uphold the platform's security and privacy guarantees.
 
+However, to make informed decisions that help browser vendors converge on consistent cookie semantics, it seems necessary to review the privacy and security goals of third-party cookie blocking.
+Specifically, we need to evaluate how the presence of cookies in cross-site contexts results in a number of endemic web vulnerabilities, undermining the security of existing web applications and requiring costly application-level mitigations in all sensitive web services.
+This analysis helps guide our decisions about where cookies may be safely allowed in cross-site contexts, and where browsers need to block them to enforce a robust security boundary for web content.
+
+The goal of this document is to promote interoperability and specify cross-site cookie blocking semantics for cases where browser behavior diverges, while maintaining the privacy and security properties of cross-site cookie blocking.
+
+Summary {#summary}
+------------------
+
+This proposal aims to:
+
+1.  Develop a shared understanding of cross-site cookie blocking and its potential security benefits for browser implementers, specification authors, and web developers.
+
+1.  Support these security benefits and specify common rules and semantics for cross-site cookie blocking, for future standardization in HTML, Fetch and the Cookies RFC.
+
+1.  Discuss how new web features such as the [Storage Access API](https://github.com/privacycg/storage-access/), [Cookies Having Independent Partitioned State (CHIPS)](https://github.com/privacycg/CHIPS), and related mechanisms might interact with cross-site cookie blocking to restore access to blocked SameSite=None cookies if needed, while upholding the privacy and security principles of cross-site cookie blocking.
+
+Security Concerns With Attaching Cookies On Cross-Site Requests {#security-concerns}
+------------------------------------------------------------------------------------
+
+Cookies have traditionally followed the [ambient authority security model](https://w3c.github.io/webappsec-cors-for-developers/#csrf): once a cookie has been set for a given scope (generally, a domain and path), it would be attached on all requests to that scope regardless of the sender of the request.
+A consequence of this behavior is that unrelated websites can forge credentialed requests to any application to which a user is logged in; these requests, authenticated with the user's "first-party" credentials carried in a cookie will be virtually indistinguishable to the destination web server from requests generated in a first-party context.
+Unless the server takes additional steps to review the provenance of the request and reject it if it was sent by an untrusted sender, an attacker-controlled request may be able to interact with the destination server as if it had been issued by the application itself.
+
+Because endpoints on the web are all identified in a common format, the <a href="https://url.spec.whatwg.org/">URL</a>, a malicious site will know the address to which to send a request in order to interact with chosen server-side functionality and issue a request with the user's cookies.
+This makes the web unsafe by default and requires applications to implement defenses to protect themselves from cross-origin attacks.
+Applications that fail to do so are commonly vulnerable to well-known, endemic classes of isolation vulnerabilities.
+This includes:
+
+-   [Cross-site request forgery (CSRF)](https://owasp.org/www-community/attacks/csrf), allowing triggering arbitrary state-changing actions on the user's behalf.
+
+-   [Clickjacking](https://owasp.org/www-community/attacks/Clickjacking), tricking the user to click on a UI element to trigger an unwanted action.
+
+-   [Cross-site script inclusion (XSS)](https://owasp.org/www-community/attacks/xss/), leaking authenticated data from responses parseable as JavaScript.
+
+-   [Cross-site leaks](https://xsleaks.dev), including XS-Search and various web-level timing attacks, revealing application-specific data belonging to the logged in user.
+
+        -   As a special case, the [exploitation of Spectre against web resources](https://www.w3.org/TR/post-spectre-webdev/#threat-model) also relies on the attacker loading an eligible authenticated resource into an attacker-controlled renderer process and reading it from memory using [hardware-level vulnerabilities](https://en.wikipedia.org/wiki/Transient_execution_CPU_vulnerability).
+
+In addition to these widely recognized web application vulnerability classes, the sending of authenticated cross-site requests has also been demonstrated to introduce other security and privacy risks, such as:
+
+-   [Login status detection](https://owasp.org/www-community/attacks/Cross_Site_History_Manipulation_(XSHM)), permitting an attacker to learn whether the user is currently logged into a chosen website.
+
+-   [Targeted deanonymization](https://www.usenix.org/conference/usenixsecurity22/presentation/zaheri), to determine if the user is logged into a specific account on a target website.
+
+-   [Login CSRF](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#possible-csrf-vulnerabilities-in-login-forms), allowing the attacker to log the user into an attacker-controlled account.
+
+-   [Logout CSRF](https://security.stackexchange.com/questions/101899/how-does-a-csrf-logout-pose-a-potential-threat-to-a-website), to end a user's session in an unrelated web application.
+
+Put simply, the traditional behavior of cookies has consistently posed substantial security problems for web applications and significantly impacted the security and privacy properties of the web platform.
+
+Gaps in Third-Party Cookie Blocking {#gaps-in-third-party-cookie-blocking}
+--------------------------------------------------------------------------
+
+In recent years some web browsers have responded to cross-site tracking concerns by employing various restrictions to remove cookies on cross-site subresource requests.
+This included blocking the sending of cookies based on a domain-level denylist (either global or built locally on-device) and, ultimately, blocking all cookies from third-party contexts ("[full third-party cookie blocking](https://webkit.org/blog/10218/full-third-party-cookie-blocking-and-more/)").
+
+However, these approaches do not fully align their definition of a third-party (or cross-site) cookie with the web's security model.
+The main difference is that privacy-motivated blocking of third-party cookies only disables cookies on requests that are cross-site relative to the top-level document.
+This approach to cookie blocking permits cookies for requests that are same-site relative to the top-level window, even if these requests were made by cross-site frames.
+
+This results in a situation where the presence of any cross-site frame under a given site allows entities that control content in that frame to exploit cross-site vulnerabilities anywhere under the embedding site.
+Cross-site embedding is common on the web: major use cases of cross-site iframes include advertising, conversion tracking, and widgets such as embedded videos, maps, or social commenting.
+This exposes a large number of websites to risks associated with authenticated cross-site requests.
+
+Third-party cookie blocking also allows attaching cookies to cross-site top-level navigation requests, including those using unsafe HTTP methods (e.g. POST).
+While permitting this is required to maintain important use cases on the web, this behavior allows exploiting CSRF vulnerabilities through top-level form submissions using the HTTP POST method.
+This is discussed more in detail in [Cross-site Interaction Scenarios](#cross-site-interaction-scenarios) below.
+
+How Should Cookies Behave? {#how-should-cookies-behave}
+=======================================================
+
+Cross-Site Interaction Scenarios {#cross-site-interaction-scenarios}
+====================================================================
