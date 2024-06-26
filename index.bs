@@ -106,5 +106,159 @@ This is discussed more in detail in [Cross-site Interaction Scenarios](#cross-si
 How Should Cookies Behave? {#how-should-cookies-behave}
 =======================================================
 
+Existing cookie models {#existing-cookie-models}
+------------------------------------------------
+
+Over time, the web has accumulated a number of features that limit the situations in which a cookie can be attached to a cross-site request, including opt-in protections using the [SameSite cookie attribute](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-13), and default restrictions enabled in several web browsers.
+In this section we briefly cover these behaviors and propose a model which maintains both the security and privacy properties we want to uphold on the web.
+
+SameSite=Strict {#same-site-strict}
+-----------------------------------
+
+The `SameSite=Strict` cookie attribute prevents the cookie from being attached on any request that wasn't issued by the same site as its destination.
+This robustly protects websites from cookie-based cross-site attacks because a malicious website isn't able to issue any credentialed requests to a cross-site destination.
+
+However, this behavior significantly changes some long-established cookie behaviors on which many web services have come to depend.
+For example, by blocking cookies on top-level navigations it results in any cross-site navigation to be treated as unauthenticated, even if the user is logged into the destination site.
+This limits the utility of `SameSite=Strict` cookies and has led to low adoption of this protection across the web.
+
+SameSite=Lax {#same-site-lax}
+-----------------------------
+
+The `SameSite=Lax` attribute prevents cookies from being attached on cross-site resource requests (such as frames or images), but allows the cookie to be sent on top-level navigations using safe HTTP methods, such as `GET`.
+
+This protects cross-site resources from being embedded with cookies and protects web services from most CSRF vulnerabilities (due to restricting cross-site POST requests).
+However, by allowing GET-based navigations, it permits websites to retain authentication after cross-site navigations, improving compatibility with existing web content.
+
+SameSite=Lax with Compatibility Exceptions {#same-site-lax-with-exceptions}
+---------------------------------------------------------------------------
+
+In an effort to [roll out protections based on SameSite=Lax cookies by default to the web](https://web.dev/articles/samesite-cookies-explained#default-behavior-changes), Google Chrome has implemented a cookie mode based on SameSite=Lax behavior, but with two additional relaxations:
+
+-   [Lax-allowing-unsafe](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-13#name-lax-allowing-unsafe-enforce): Allow top-level cross-site navigations using [unsafe methods](https://developer.mozilla.org/en-US/docs/Glossary/Safe/HTTP) (in practice, `POST`) to carry a cookie if the cookie had been created recently (specifically, if the cookie age is 2 minutes or less).
+    This change was made because a number of common payment flows rely on top-level `POST` navigations and depend on the presence of cookies.
+
+-   [Re-attaching credentials after cross-site to same-site redirects](https://issues.chromium.org/issues/40184286): Some websites contain resources and iframes pointing to cross-site destinations which then redirect back to an endpoint within the top-level site. The `SameSite=Lax` behavior is to remove cookies on the same-site redirect, which results in load failures for resources which require authentication; this relaxation was made to prevent websites depending on this pattern from breaking.
+
+Both of these exceptions were made as a compromise between security and compatibility, in the interest of switching to safer default cookie semantics based on the `SameSite=Lax` model, without affecting legitimate, commonly used patterns.
+
+Third-Party Cookie Blocking {#third-party-cookie-blocking}
+----------------------------------------------------------
+
+The most common implementation of third-party cookie blocking restricts requests from carrying cookies if they are cross-site relative to the top-level window.
+However, it permits requests to destinations same-site with the top-level window to carry cookies, even if these requests were sent by cross-site iframes.
+This permits cross-site iframes to issue credentialed requests to the site of their top-level embedder, allowing them to exploit cross-site vulnerabilities.
+
+SameSite=None {#same-site-none}
+-------------------------------
+
+As part of the [SameSite=Lax-by-default rollout](https://web.dev/articles/samesite-cookies-explained#default-behavior-changes), Google Chrome made it possible for developers to disable `SameSite` restrictions on cookies and permit these cookies to be sent on cross-site requests.
+This behavior, made possible by setting cookies as `SameSite=None`, is generally incompatible with the web's privacy model because it allows the creation of third-party cookies that retain state across top-level contexts. Similarly, the current behavior of SameSite=None cookies isn't aligned with the desired cookie security model because it removes all cookie-level protections against cross-site attacks.
+To re-align with the desired security model, the behavior of these cookies needs to change as part of privacy efforts.
+
+`SameSite=None` cookies do have an important role to play on the web – they are necessary to allow developers to relax `SameSite` restrictions on cookies in places where such relaxations are compatible with the web's security and privacy goals.
+We provide a detailed discussion of these scenarios in the [Cross-Site Interaction Scenarios](#cross-site-interaction-scenarios) section below.
+
+Overview {#overview}
+--------------------
+
+<style>
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 8px;
+}
+</style>
+<table>
+  <tr>
+    <th> Mechanism </th>
+    <th> Security protections </th>
+    <th> Privacy protections </th>
+    <th> Compatibility </th>
+  </tr>
+  <tr>
+    <td> `SameSite=Strict` </td>
+    <td> High </td>
+    <td> Yes </td>
+    <td> Low </td>
+  </tr>
+  <tr>
+    <td> `SameSite=Lax` </td>
+    <td> High </td>
+    <td> Yes </td>
+    <td> Medium </td>
+  </tr>
+  <tr>
+    <td> `SameSite=Lax` with exceptions </td>
+    <td> Medium </td>
+    <td> Yes </td>
+    <td> High </td>
+  </tr>
+  <tr>
+    <td> Third-party cookie blocking </td>
+    <td> Low </td>
+    <td> Yes </td>
+    <td> High </td>
+  </tr>
+  <tr>
+    <td> `SameSite=None` </td>
+    <td> None </td>
+    <td> No </td>
+    <td> High </td>
+  </tr>
+</table>
+
+We believe that a successful cookie model needs to balance security and privacy with web compatibility.
+For example, given that many websites rely on receiving credentials when they're navigated to from a cross-site destination, we couldn't require the web to switch to `SameSite=Strict` cookies, as that would remove authentication after such navigations.
+This would favor security at the expense of compatibility and usability, and would arguably be detrimental to the web platform.
+
+Similarly, the third-party cookie blocking approach can be seen as prioritizing compatibility over security.
+While it upholds privacy protections against cross-site tracking, it isn't a robust security boundary because it allows cross-site attacks from embedded content.
+Under the web's principle of composability it must be possible for websites to safely embed cross-site content without exposing themselves to attacks; as such, we believe that current third-party blocking implementations are insufficient from a security perspective.
+
+Thus, the approach we should aim for falls somewhere between the [SameSite=Lax](#same-site-lax) and [SameSite=Lax with exceptions](#same-site-lax-with-exceptions) behaviors, as discussed below.
+
+End State Security Properties {#end-state-security-properties}
+--------------------------------------------------------------
+
+In addition to the privacy goals of preventing cross-site tracking, from a security perspective, there are two core restrictions that the web platform needs to enforce on all cookies:
+
+1.  It should be impossible to make credentialed cross-site subresource requests (e.g. to load an image or iframe), unless the destination endpoint explicitly opts into being loaded with credentials in a cross-site context (for example, through calling [document.requestStorageAccess()](https://developer.mozilla.org/en-US/docs/Web/API/Document/requestStorageAccess) or using [Storage Access API headers](https://github.com/cfredric/storage-access-headers)).
+
+1.  It should be impossible to make credentialed cross-site requests with unsafe methods, such as POST. Practically, this means that authenticated top-level navigations should only be allowed through GET requests.
+
+<b>Why can't we allow developers to opt out of platform-level cookie security/privacy restrictions?</b>
+
+An important question is why the web platform should prevent developers from relaxing the security and privacy properties of cookies if they intentionally wish to do so.
+
+From a privacy perspective, the answer is straightforward: the use of cookies in third-party contexts allows the creation of identifiers shared across top-level sites that can be used to track the user's cross-site activity.
+The web platform aims to prevent this from happening.
+
+From a security perspective, the chief concern is that relaxing a site's cookie properties is likely to expose the site to cross-site vulnerabilities in ways that are difficult for developers to understand, especially in a world where cookie restrictions apply by default.
+This is problematic because of a combination of the following factors:
+
+-   Cookies are a coarse-grained mechanism: It's common for a single authentication cookie to be used for a whole origin, or even site through the use of [domain-wide cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#define_where_cookies_are_sent).
+    If a developer relaxes cookie protections to allow receiving credentialed cross-site requests to a single endpoint on their origin, they will expose their entire origin to cross-site attacks.
+
+-   Developers frequently need to allow credentialed cross-site interactions to at least a small number of endpoints.
+    For example, an application may provide an authenticated iframe, CORS API, or resource embeddable by a small number of partner sites, or permit ABA-style embedding scenarios.
+    If any single such pattern requires relaxing cookie security properties, it will be common for developers to broadly opt out of default platform cookie protections, unnecessarily reducing the security of their applications.
+
+Because the main mechanism to relax cookie restrictions is to set them as `SameSite=None`, we thus need to make sure that the security properties of `SameSite=None` cookies are sufficiently robust.
+That is, we aim to make the "least safe" cookie behavior that developers can opt into when creating a cookie (by using `SameSite=None`) to still be safe enough to offer robust default protections.
+
+**Note**: Developers will be able to relax cookie restrictions through the use of Storage Access API's [document.requestStorageAccess()](https://developer.mozilla.org/en-US/docs/Web/API/Document/requestStorageAccess) or [Storage Access API headers](https://github.com/cfredric/storage-access-headers).
+However, these mechanisms are more tightly scoped and apply only at the level of individual documents or endpoints, reducing the risk of misconfiguring applications to make them broadly susceptible to cross-site attacks.
+
 Cross-Site Interaction Scenarios {#cross-site-interaction-scenarios}
 ====================================================================
+
+As outlined in the previous section, in general we aim to not attach unpartitioned cookies to cross-site requests, except for top-level navigations using safe HTTP methods, such as `GET`.
+
+However, there are a number of cases where the relationship between the source and destination of the request is less clear, where current browser behaviors diverge.
+We outline these cases below, along with the recommended behaviors that meet the security and privacy goals.
+
+Same-Site Embeds with Cross-Site Ancestors (ABA embeds) {#aba-embeds}
+---------------------------------------------------------------------
