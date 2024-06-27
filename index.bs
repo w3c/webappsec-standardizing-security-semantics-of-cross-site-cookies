@@ -510,4 +510,6 @@ Acknowledgements {#acks}
 <!-- This document relies upon a number of excellent resources that spell out much of the foundation of our understanding of Spectre’s implications for the web, and justify the mitigation strategies we currently espouse. -->
 The following is an incomplete list of those works:
 
-[[CHIPS]] [[CLICKJACKING]] [[CORS-FOR-DEVELOPERS]] [[CSRF]] [[FULL-THIRD-PARTY-COOKIE-BLOCKING]] [[HARDWARE-LEVEL-VULNERABILITIES]] [[LOGIN-CSRF]] [[LOGOUT-CSRF]] [[POST-SPECTRE-WEB-DEVELOPMENT]] [[SAFE-HTTP-METHODS]] [[STORAGE-ACCESS-API]] [[STORAGE-ACCESS-HEADERS]] [[TARGETED-DEANONYMIZATION]] [[XS-LEAKS]] [[XSHM]] [[XSS]]
+[[CHIPS]], [[CLICKJACKING]], [[CORS-FOR-DEVELOPERS]], [[CSRF]], [[FULL-THIRD-PARTY-COOKIE-BLOCKING]], [[HARDWARE-LEVEL-VULNERABILITIES]],
+[[LOGIN-CSRF]], [[LOGOUT-CSRF]], [[POST-SPECTRE-WEB-DEVELOPMENT]], [[SAFE-HTTP-METHODS]], [[STORAGE-ACCESS-API]], [[STORAGE-ACCESS-HEADERS]],
+[[TARGETED-DEANONYMIZATION]], [[XS-LEAKS]], [[XSHM]], [[XSS]]
