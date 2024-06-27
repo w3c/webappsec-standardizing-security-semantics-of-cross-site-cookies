@@ -243,7 +243,7 @@ This is problematic because of a combination of the following factors:
     If a developer relaxes cookie protections to allow receiving credentialed cross-site requests to a single endpoint on their origin, they will expose their entire origin to cross-site attacks.
 
 -   Developers frequently need to allow credentialed cross-site interactions to at least a small number of endpoints.
-    For example, an application may provide an authenticated iframe, CORS API, or resource embeddable by a small number of partner sites, or permit ABA-style embedding scenarios.
+    For example, an application may provide an authenticated iframe, CORS API, or resource embeddable by a small number of partner sites, or permit A>B>A-style embedding scenarios.
     If any single such pattern requires relaxing cookie security properties, it will be common for developers to broadly opt out of default platform cookie protections, unnecessarily reducing the security of their applications.
 
 Because the main mechanism to relax cookie restrictions is to set them as `SameSite=None`, we thus need to make sure that the security properties of `SameSite=None` cookies are sufficiently robust.
@@ -260,19 +260,19 @@ As outlined in the previous section, in general we aim to not attach unpartition
 However, there are a number of cases where the relationship between the source and destination of the request is less clear, where current browser behaviors diverge.
 We outline these cases below, along with the recommended behaviors that meet the security and privacy goals.
 
-Same-Site Embeds with Cross-Site Ancestors (ABA embeds) {#aba-embeds}
----------------------------------------------------------------------
+Same-Site Embeds with Cross-Site Ancestors (A>B>A embeds) {#aba-embeds}
+-----------------------------------------------------------------------
 
 Sites will have embeds that are same-site with the top-level site, but the embed has at least one cross-site ancestor in the frame tree.
-For brevity, we call these embeds ABA embeds.
+For brevity, we call these embeds A>B>A embeds.
 
 When current third-party cookie blocking controls are enabled, major browsers' behaviors differ:
 
--   Chrome will always block cookies in the ABA embed.
+-   Chrome will always block cookies in the A>B>A embed.
 
--   Firefox allows the ABA embed to read cookies set by A as the top-level site, but the ABA embed cannot write new cookies.
+-   Firefox allows the A>B>A embed to read cookies set by A as the top-level site, but the A>B>A embed cannot write new cookies.
 
--   Safari and Brave allow ABA embeds to read and write cookies, including with headers in subresource requests to A that originate from an embedded site B frame.
+-   Safari and Brave allow A>B>A embeds to read and write cookies, including with headers in subresource requests to A that originate from an embedded site B frame.
 
 ### Security Considerations ### {#aba-embeds-security}
 
@@ -285,7 +285,7 @@ Endpoints which don't expect cross-site interactions (and hence do not deploy su
 
 ### Recommendation ### {#aba-embeds-recommendation}
 
-In order to defend against these types of attacks, we recommend that ABA embeds which wish to use `SameSite=None` cookies in a nested frame must call the Storage Access API first, which will grant access without prompting the user in this particular case.
+In order to defend against these types of attacks, we recommend that A>B>A embeds which wish to use `SameSite=None` cookies in a nested frame must call the Storage Access API first, which will grant access without prompting the user in this particular case.
 
 Navigating a Cross-Site Embed to a Same-Site Frame {#navigating-x-site-frame}
 -----------------------------------------------------------------------------
@@ -331,3 +331,43 @@ In the future, we would encourage use of some sort of preflight mechanism.
 
 Implementation Considerations {#implementation-considerations}
 ==============================================================
+
+Changing Third-Party Cookie Blocking to Use "Site For Cookies" {#changing-third-party-cookie-blocking}
+------------------------------------------------------------------------------------------------------
+
+[RFC 6265 bis](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-13) defines algorithms in section 5.2 to compute the "site for cookies" for a particular HTTP request.
+The result of this computation is used to determine which cookies are attached to requests based on their `SameSite` attribute.
+Cookies set with `SameSite=Lax/Strict` are sent in requests whose URL is same-site with the corresponding site for cookies, i.e. same-site requests.
+`SameSite=None` cookies are allowed in all contexts, including when the request URL is cross-site with the corresponding site for cookies, i.e. cross-site requests.
+
+Our recommendation is to standardize third-party cookie blocking to use site for cookies to determine if a request is same-site or cross-site.
+Doing so will prevent third-party embeds from being able to send credentialed requests to the top-level site by default.
+
+Request Storage Access for A>B>A Embeds {#rsa-for-aba}
+------------------------------------------------------
+
+We recommend for ABA embeds (see "Cross-site interaction scenarios" section) to allow the inner embed which is same-site with the top-level URL to regain access to cookies by calling the Storage Access API.
+Since the embed invoking the API is same-site with the top-level URL, the request can be auto-granted with no impact on user privacy.
+Requiring that the Storage Access API be invoked provides a strong security signal that the top-level URL consents to sending their own credentials from a request that spawned within a third-party embed.
+
+Heuristics Temporarily Allowing Third-Party Cookies {#heuristics-temporarily-allowing-third-party-cookies}
+----------------------------------------------------------------------------------------------------------
+
+Some browsers, including Chrome, have implemented [heuristics](https://developers.google.com/privacy-sandbox/3pcd/temporary-exceptions/heuristics-based-exceptions) that temporarily grant access to third-party cookies based on confidence signals that the cookie is being used for critical user journeys on the site and not for tracking purposes.
+
+While these heuristics will help websites stay functional during the period the web is transitioning away from third-party cookies, they have the potential to negate some of the security protections of removing third-party cookies.
+Developers should take care to ensure the flows that rely on these heuristics do not unwittingly expose their site's state to attackers.
+
+Enterprise Policies {#enterprise-policies}
+------------------------------------------
+
+Browsers may support enterprise policies which disable third-party cookie blocking entirely.
+One example is the [BlockThirdPartyCookies](https://chromeenterprise.google/policies/#BlockThirdPartyCookies) policy in Chromium.
+These policies will be necessary to keep critical business functionality for enterprises during the transition away from third-party cookies, especially in organizations which may not be able to push software updates to account for the change in a reasonable amount of time.
+However, these policies leave enterprise users vulnerable to CSRF or other attacks that result from cross-site boundary leaks.
+Browsers and web developers will have to consider the additional risk these users are subject to.
+
+Acknowledgements {#acks}
+========================
+
+TODO
