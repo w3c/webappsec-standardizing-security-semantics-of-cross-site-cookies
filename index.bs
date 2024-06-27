@@ -26,11 +26,145 @@ Abstract:
 Boilerplate: webappsec true
 Markup Shorthands: markdown yes, css no
 </pre>
+<pre class="link-defaults">
+spec:url; type:interface; text:URL
+</pre>
+<pre class="biblio">
+{
+  "blockthirdpartycookies": {
+    "href": "https://chromeenterprise.google/policies/#BlockThirdPartyCookies",
+    "title": "BlockThirdPartyCookies",
+    "authors": [ "Google" ]
+  },
+  "chips": {
+    "href": "https://github.com/privacycg/CHIPS",
+    "title": "CHIPS (Cookies Having Independent Partitioned State)",
+    "authors": [ "Dylan Cutler", "Kaustubha Govind" ]
+  },
+  "clickjacking": {
+    "href": "https://owasp.org/www-community/attacks/Clickjacking",
+    "title": "Clickjacking",
+    "authors": [ "Gustav Rydstedt" ]
+  },
+  "cookie-samesite-bug": {
+    "href": "https://issues.chromium.org/issues/40184286",
+    "title": "Cookie SameSite: redirect checking causes site breakag",
+    "authors": [ "Lily Chen" ]
+  },
+  "cors-for-developers": {
+    "href": "https://w3c.github.io/webappsec-cors-for-developers",
+    "title": "CORS for Developers",
+    "authors": [ "Brad Hill" ]
+  },
+  "csrf": {
+    "href": "https://owasp.org/www-community/attacks/csrf",
+    "title": "Cross Site Request Forgery (CSRF)",
+    "authors": [ "KirstenS" ]
+  },
+  "full-third-party-cookie-blocking": {
+    "href": "https://webkit.org/blog/10218/full-third-party-cookie-blocking-and-more/",
+    "title": "Full Third-Party Cookie Blocking and More",
+    "authors": [ "John Wilander" ]
+  },
+  "hardware-level-vulnerabilities": {
+    "href": "https://en.wikipedia.org/wiki/Transient_execution_CPU_vulnerability",
+    "title": "Transient execution CPU vulnerability",
+    "authors": [ "Wikipedia" ]
+  },
+  "heuristics": {
+    "href": "https://developers.google.com/privacy-sandbox/3pcd/temporary-exceptions/heuristics-based-exceptions",
+    "title": "Temporary third-party cookie access using heuristics based exceptions.",
+    "authors": [ "Google" ]
+  },
+  "login-csrf": {
+    "href": "https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html",
+    "title": "Cross-Site Request Forgery Prevention Cheat Sheet",
+    "authors": [ "OWASP" ]
+  },
+  "logout-csrf": {
+    "href": "https://security.stackexchange.com/questions/101899/how-does-a-csrf-logout-pose-a-potential-threat-to-a-website",
+    "title": "How does a CSRF logout pose a potential threat to a website?",
+    "authors": [ "Steve Sether" ]
+  },
+  "using-http-cookies": {
+    "href": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies",
+    "title": "Using HTTP Cookies",
+    "authors": [ "MDN" ]
+  },
+  "post-spectre-web-development": {
+    "href": "https://www.w3.org/TR/post-spectre-webdev/#threat-model",
+    "title": "Post-Spectre Web Development",
+    "authors": [ "Mike West" ]
+  },
+  "safe-http-methods": {
+    "href": "https://developer.mozilla.org/en-US/docs/Glossary/Safe/HTTP",
+    "title": "Safe (HTTP Methods)",
+    "authors": [ "MDN" ]
+  },
+  "samesite-cookies-explained": {
+    "href": "https://web.dev/articles/samesite-cookies-explained",
+    "title": "SameSite cookies explained",
+    "authors": [ "Rowan Merewood" ]
+  },
+  "storage-access-api": {
+    "href": "https://github.com/privacycg/storage-access/",
+    "title": "The Storage Access API",
+    "authors": [ "Benjamin Vandersloot", "Johann Hofmann", "Anne van Kesteren" ]
+  },
+  "storage-access-headers": {
+    "href": "https://github.com/cfredric/storage-access-headers",
+    "title": "Storage Access Headers Proposal",
+    "authors": [ "Chris Fredrickson" ]
+  },
+  "targeted-deanonymization": {
+    "href": "https://www.usenix.org/conference/usenixsecurity22/presentation/zaheri",
+    "title": "Targeted Deanonymization via the Cache Side Channel: Attacks and Defenses",
+    "authors": [
+      "Mojtaba Zaheri",
+      "Yossi Oren",
+      "Reza Curtmola"
+    ]
+  },
+  "w3c-privacy": {
+    "href": "https://www.w3.org/mission/privacy/",
+    "title": "Privacy | Our mission | W3C",
+    "authors": [ "W3C" ]
+  },
+  "xs-leaks": {
+    "href": "https://xsleaks.dev",
+    "title": "XS-Leaks Wiki",
+    "authors": [
+        "Manuel Sousa",
+        "terjanq",
+        "Roberto Clapis",
+        "David Dworken",
+        "NDevTK",
+        "1lastBr3ath",
+        "Brasco",
+        "rick.titor",
+        "Chris Fredrickson",
+        "jub0bs",
+        "Zeyu (Zayne) Zhang",
+        "Medi, Aaron Shim"
+    ]
+  },
+  "xshm": {
+    "href": "https://owasp.org/www-community/attacks/Cross_Site_History_Manipulation_(XSHM)",
+    "title": "Cross Site History Manipulation (XSHM)",
+    "authors": [ "Adar Weidman" ]
+  },
+  "xss": {
+    "href": "https://owasp.org/www-community/attacks/xss/",
+    "title": "Cross Site Scripting (XSS)",
+    "authors": [ "KirstenS" ]
+  }
+}
+</pre>
 
 Introduction {#intro}
 =====================
 
-Major browsers have shipped or announced plans to restrict cookies in cross-site contexts to improve the privacy of their users and protect them from [cross-site tracking](https://www.w3.org/mission/privacy/).
+Major browsers have shipped or announced plans to restrict cookies in [[RFC6265BIS-14#name-same-site-and-cross-site-re|cross-site]] contexts to improve the privacy of their users and protect them from cross-site tracking. [[W3C-PRIVACY]]
 However, the details of which requests are considered cross-site vary between browsers; as a result, browsers' cookie blocking behaviors have subtle differences.
 Because of the importance of cookies to the web platform, and the substantial amount of existing web content and functionality that depends on the presence of cookies in cross-site contexts, it is important to converge on interoperable cookie semantics that uphold the platform's security and privacy guarantees.
 
@@ -49,39 +183,39 @@ This proposal aims to:
 
 1.  Support these security benefits and specify common rules and semantics for cross-site cookie blocking, for future standardization in HTML, Fetch and the Cookies RFC.
 
-1.  Discuss how new web features such as the [Storage Access API](https://github.com/privacycg/storage-access/), [Cookies Having Independent Partitioned State (CHIPS)](https://github.com/privacycg/CHIPS), and related mechanisms might interact with cross-site cookie blocking to restore access to blocked SameSite=None cookies if needed, while upholding the privacy and security principles of cross-site cookie blocking.
+1.  Discuss how new web features such as the Storage Access API, Cookies Having Independent Partitioned State (CHIPS), and related mechanisms might interact with cross-site cookie blocking to restore access to blocked `SameSite=None` cookies if needed, while upholding the privacy and security principles of cross-site cookie blocking. [[STORAGE-ACCESS-API]] [[CHIPS]]
 
 Security Concerns With Attaching Cookies On Cross-Site Requests {#security-concerns}
 ------------------------------------------------------------------------------------
 
-Cookies have traditionally followed the [ambient authority security model](https://w3c.github.io/webappsec-cors-for-developers/#csrf): once a cookie has been set for a given scope (generally, a domain and path), it would be attached on all requests to that scope regardless of the sender of the request.
+Cookies have traditionally followed the [ambient authority security model](https://w3c.github.io/webappsec-cors-for-developers/#csrf): once a cookie has been set for a given scope (generally, a domain and path), it would be attached on all requests to that scope regardless of the sender of the request. [[CORS-FOR-DEVELOPERS]]
 A consequence of this behavior is that unrelated websites can forge credentialed requests to any application to which a user is logged in; these requests, authenticated with the user's "first-party" credentials carried in a cookie will be virtually indistinguishable to the destination web server from requests generated in a first-party context.
 Unless the server takes additional steps to review the provenance of the request and reject it if it was sent by an untrusted sender, an attacker-controlled request may be able to interact with the destination server as if it had been issued by the application itself.
 
-Because endpoints on the web are all identified in a common format, the <a href="https://url.spec.whatwg.org/">URL</a>, a malicious site will know the address to which to send a request in order to interact with chosen server-side functionality and issue a request with the user's cookies.
+Because endpoints on the web are all identified in a common format, the {{URL}}, a malicious site will know the address to which to send a request in order to interact with chosen server-side functionality and issue a request with the user's cookies.
 This makes the web unsafe by default and requires applications to implement defenses to protect themselves from cross-origin attacks.
 Applications that fail to do so are commonly vulnerable to well-known, endemic classes of isolation vulnerabilities.
 This includes:
 
--   [Cross-site request forgery (CSRF)](https://owasp.org/www-community/attacks/csrf), allowing triggering arbitrary state-changing actions on the user's behalf.
+-   Cross-site request forgery [[CSRF]], allowing triggering arbitrary state-changing actions on the user's behalf.
 
--   [Clickjacking](https://owasp.org/www-community/attacks/Clickjacking), tricking the user to click on a UI element to trigger an unwanted action.
+-   Clickjacking [[CLICKJACKING]], tricking the user to click on a UI element to trigger an unwanted action.
 
--   [Cross-site script inclusion (XSS)](https://owasp.org/www-community/attacks/xss/), leaking authenticated data from responses parseable as JavaScript.
+-   Cross-site script inclusion [[XSS]], leaking authenticated data from responses parseable as JavaScript.
 
--   [Cross-site leaks](https://xsleaks.dev), including XS-Search and various web-level timing attacks, revealing application-specific data belonging to the logged in user.
+-   Cross-site leaks [[XS-LEAKS]], including XS-Search and various web-level timing attacks, revealing application-specific data belonging to the logged in user.
 
-        -   As a special case, the [exploitation of Spectre against web resources](https://www.w3.org/TR/post-spectre-webdev/#threat-model) also relies on the attacker loading an eligible authenticated resource into an attacker-controlled renderer process and reading it from memory using [hardware-level vulnerabilities](https://en.wikipedia.org/wiki/Transient_execution_CPU_vulnerability).
+        -   As a special case, the [exploitation of Spectre against web resources](https://www.w3.org/TR/post-spectre-webdev/#threat-model) also relies on the attacker loading an eligible authenticated resource into an attacker-controlled renderer process and reading it from memory using hardware-level vulnerabilities. [[POST-SPECTRE-WEB-DEVELOPMENT]] [[HARDWARE-LEVEL-VULNERABILITIES]]
 
 In addition to these widely recognized web application vulnerability classes, the sending of authenticated cross-site requests has also been demonstrated to introduce other security and privacy risks, such as:
 
--   [Login status detection](https://owasp.org/www-community/attacks/Cross_Site_History_Manipulation_(XSHM)), permitting an attacker to learn whether the user is currently logged into a chosen website.
+-   Login status detection [[XSHM]], permitting an attacker to learn whether the user is currently logged into a chosen website.
 
--   [Targeted deanonymization](https://www.usenix.org/conference/usenixsecurity22/presentation/zaheri), to determine if the user is logged into a specific account on a target website.
+-   Targeted deanonymization [[TARGETED-DEANONYMIZATION]], to determine if the user is logged into a specific account on a target website.
 
--   [Login CSRF](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#possible-csrf-vulnerabilities-in-login-forms), allowing the attacker to log the user into an attacker-controlled account.
+-   Login CSRF [[LOGIN-CSRF]], allowing the attacker to log the user into an attacker-controlled account.
 
--   [Logout CSRF](https://security.stackexchange.com/questions/101899/how-does-a-csrf-logout-pose-a-potential-threat-to-a-website), to end a user's session in an unrelated web application.
+-   Logout CSRF [[LOGOUT-CSRF]], to end a user's session in an unrelated web application.
 
 Put simply, the traditional behavior of cookies has consistently posed substantial security problems for web applications and significantly impacted the security and privacy properties of the web platform.
 
@@ -89,7 +223,7 @@ Gaps in Third-Party Cookie Blocking {#gaps-in-third-party-cookie-blocking}
 --------------------------------------------------------------------------
 
 In recent years some web browsers have responded to cross-site tracking concerns by employing various restrictions to remove cookies on cross-site subresource requests.
-This included blocking the sending of cookies based on a domain-level denylist (either global or built locally on-device) and, ultimately, blocking all cookies from third-party contexts ("[full third-party cookie blocking](https://webkit.org/blog/10218/full-third-party-cookie-blocking-and-more/)").
+This included blocking the sending of cookies based on a domain-level denylist (either global or built locally on-device) and, ultimately, blocking all cookies from third-party contexts. [[FULL-THIRD-PARTY-COOKIE-BLOCKING]]
 
 However, these approaches do not fully align their definition of a third-party (or cross-site) cookie with the web's security model.
 The main difference is that privacy-motivated blocking of third-party cookies only disables cookies on requests that are cross-site relative to the top-level document.
@@ -109,7 +243,7 @@ How Should Cookies Behave? {#how-should-cookies-behave}
 Existing cookie models {#existing-cookie-models}
 ------------------------------------------------
 
-Over time, the web has accumulated a number of features that limit the situations in which a cookie can be attached to a cross-site request, including opt-in protections using the [SameSite cookie attribute](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-13), and default restrictions enabled in several web browsers.
+Over time, the web has accumulated a number of features that limit the situations in which a cookie can be attached to a cross-site request, including opt-in protections using the [[RFC6265BIS-14#name-the-samesite-attribute-2|the SameSite Attribute]], and default restrictions enabled in several web browsers.
 In this section we briefly cover these behaviors and propose a model which maintains both the security and privacy properties we want to uphold on the web.
 
 SameSite=Strict {#same-site-strict}
@@ -135,10 +269,10 @@ SameSite=Lax with Compatibility Exceptions {#same-site-lax-with-exceptions}
 
 In an effort to [roll out protections based on SameSite=Lax cookies by default to the web](https://web.dev/articles/samesite-cookies-explained#default-behavior-changes), Google Chrome has implemented a cookie mode based on SameSite=Lax behavior, but with two additional relaxations:
 
--   [Lax-allowing-unsafe](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-13#name-lax-allowing-unsafe-enforce): Allow top-level cross-site navigations using [unsafe methods](https://developer.mozilla.org/en-US/docs/Glossary/Safe/HTTP) (in practice, `POST`) to carry a cookie if the cookie had been created recently (specifically, if the cookie age is 2 minutes or less).
+-   [[RFC6265BIS-14#name-lax-allowing-unsafe-enforce|Lax-allowing-unsafe]]: Allow top-level cross-site navigations using unsafe methods (in practice, `POST`) to carry a cookie if the cookie had been created recently (specifically, if the cookie age is 2 minutes or less). [[SAFE-HTTP-METHODS]]
     This change was made because a number of common payment flows rely on top-level `POST` navigations and depend on the presence of cookies.
 
--   [Re-attaching credentials after cross-site to same-site redirects](https://issues.chromium.org/issues/40184286): Some websites contain resources and iframes pointing to cross-site destinations which then redirect back to an endpoint within the top-level site. The `SameSite=Lax` behavior is to remove cookies on the same-site redirect, which results in load failures for resources which require authentication; this relaxation was made to prevent websites depending on this pattern from breaking.
+-   Re-attaching credentials after cross-site to same-site redirects: Some websites contain resources and iframes pointing to cross-site destinations which then redirect back to an endpoint within the top-level site. The `SameSite=Lax` behavior is to remove cookies on the same-site redirect, which results in load failures for resources which require authentication; this relaxation was made to prevent websites depending on this pattern from breaking. [[COOKIE-SAMESITE-BUG]]
 
 Both of these exceptions were made as a compromise between security and compatibility, in the interest of switching to safer default cookie semantics based on the `SameSite=Lax` model, without affecting legitimate, commonly used patterns.
 
@@ -152,7 +286,7 @@ This permits cross-site iframes to issue credentialed requests to the site of th
 SameSite=None {#same-site-none}
 -------------------------------
 
-As part of the [SameSite=Lax-by-default rollout](https://web.dev/articles/samesite-cookies-explained#default-behavior-changes), Google Chrome made it possible for developers to disable `SameSite` restrictions on cookies and permit these cookies to be sent on cross-site requests.
+As part of the SameSite=Lax-by-default rollout, Google Chrome made it possible for developers to disable `SameSite` restrictions on cookies and permit these cookies to be sent on cross-site requests. [[SAMESITE-COOKIES-EXPLAINED]]
 This behavior, made possible by setting cookies as `SameSite=None`, is generally incompatible with the web's privacy model because it allows the creation of third-party cookies that retain state across top-level contexts. Similarly, the current behavior of SameSite=None cookies isn't aligned with the desired cookie security model because it removes all cookie-level protections against cross-site attacks.
 To re-align with the desired security model, the behavior of these cookies needs to change as part of privacy efforts.
 
@@ -225,7 +359,7 @@ End State Security Properties {#end-state-security-properties}
 
 In addition to the privacy goals of preventing cross-site tracking, from a security perspective, there are two core restrictions that the web platform needs to enforce on all cookies:
 
-1.  It should be impossible to make credentialed cross-site subresource requests (e.g. to load an image or iframe), unless the destination endpoint explicitly opts into being loaded with credentials in a cross-site context (for example, through calling [document.requestStorageAccess()](https://developer.mozilla.org/en-US/docs/Web/API/Document/requestStorageAccess) or using [Storage Access API headers](https://github.com/cfredric/storage-access-headers)).
+1.  It should be impossible to make credentialed cross-site subresource requests (e.g. to load an image or iframe), unless the destination endpoint explicitly opts into being loaded with credentials in a cross-site context (for example, through calling {{Document/requestStorageAccess}} or using Storage Access API headers. [[STORAGE-ACCESS-HEADERS]]
 
 1.  It should be impossible to make credentialed cross-site requests with unsafe methods, such as POST. Practically, this means that authenticated top-level navigations should only be allowed through GET requests.
 
@@ -239,7 +373,7 @@ The web platform aims to prevent this from happening.
 From a security perspective, the chief concern is that relaxing a site's cookie properties is likely to expose the site to cross-site vulnerabilities in ways that are difficult for developers to understand, especially in a world where cookie restrictions apply by default.
 This is problematic because of a combination of the following factors:
 
--   Cookies are a coarse-grained mechanism: It's common for a single authentication cookie to be used for a whole origin, or even site through the use of [domain-wide cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#define_where_cookies_are_sent).
+-   Cookies are a coarse-grained mechanism: It's common for a single authentication cookie to be used for a whole origin, or even site through the use of domain-wide cookies. [[USING-HTTP-COOKIES]]
     If a developer relaxes cookie protections to allow receiving credentialed cross-site requests to a single endpoint on their origin, they will expose their entire origin to cross-site attacks.
 
 -   Developers frequently need to allow credentialed cross-site interactions to at least a small number of endpoints.
@@ -249,7 +383,7 @@ This is problematic because of a combination of the following factors:
 Because the main mechanism to relax cookie restrictions is to set them as `SameSite=None`, we thus need to make sure that the security properties of `SameSite=None` cookies are sufficiently robust.
 That is, we aim to make the "least safe" cookie behavior that developers can opt into when creating a cookie (by using `SameSite=None`) to still be safe enough to offer robust default protections.
 
-**Note**: Developers will be able to relax cookie restrictions through the use of Storage Access API's [document.requestStorageAccess()](https://developer.mozilla.org/en-US/docs/Web/API/Document/requestStorageAccess) or [Storage Access API headers](https://github.com/cfredric/storage-access-headers).
+**Note**: Developers will be able to relax cookie restrictions through the use of Storage Access API's {{Document/requestStorageAccess}} or Storage Access API headers. [[STORAGE-ACCESS-HEADERS]]
 However, these mechanisms are more tightly scoped and apply only at the level of individual documents or endpoints, reducing the risk of misconfiguring applications to make them broadly susceptible to cross-site attacks.
 
 Cross-Site Interaction Scenarios {#cross-site-interaction-scenarios}
@@ -277,10 +411,10 @@ When current third-party cookie blocking controls are enabled, major browsers' b
 ### Security Considerations ### {#aba-embeds-security}
 
 Allowing embeds with cross-site ancestors to have access to cookies has the consequence of also permitting any embedded site to make credentialed requests to the top-level domain.
-This could allow malicious third-party sites to exploit [cross-site information leaks](https://xsleaks.dev/).
-The cookie specification was [recently updated](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite) to require that sites opt-in to cookies that need to be sent on cross-site requests with the `SameSite=None` attribute.
+This could allow malicious third-party sites to exploit cross-site information leaks. [[XS-LEAKS]]
+The cookie specification [[RFC6265BIS-14#section-5.5.7.1|requires]] that sites opt-in to cookies that need to be sent on cross-site requests with the `SameSite=None` attribute.
 One may contend that this already offers websites some protection by default.
-However, sites which enable SameSite=None cookies tend to have multiple endpoints, only some of which expect to be served in specific, trusted cross-site contexts.
+However, sites which enable `SameSite=None` cookies tend to have multiple endpoints, only some of which expect to be served in specific, trusted cross-site contexts.
 Endpoints which don't expect cross-site interactions (and hence do not deploy sufficient protections against cross-site leaks or cross-site request forgery) might be unwittingly exposed to attacks from cross-site iframes.
 
 ### Recommendation ### {#aba-embeds-recommendation}
@@ -297,7 +431,7 @@ Should this be included in a spec as standard behavior?
 
 ### Security Considerations ### {#navigating-x-site-frame-security}
 
-The ability of a cross-site iframe to force the top-level window to embed an arbitrary same-site endpoint as an iframe does not introduce a major risk of cross-site leaks – the attacker does not gain capabilities to learn information about the data loaded in the iframe.
+The ability of a cross-site iframe to force the top-level window to embed an arbitrary same-site endpoint as an iframe does not introduce a major risk of cross-site leaks -- the attacker does not gain capabilities to learn information about the data loaded in the iframe.
 The primary risk in this context is CSRF due to the possibility of initiating a credentialed navigation (via either a `GET` or `POST` request) to arbitrary same-site destinations.
 This could be mitigated by allowing credentialed `GET` navigations, but restricting the sending of cookies on `POST` requests (most state-changing actions require non-safe methods such as `POST`).
 
@@ -335,7 +469,7 @@ Implementation Considerations {#implementation-considerations}
 Changing Third-Party Cookie Blocking to Use "Site For Cookies" {#changing-third-party-cookie-blocking}
 ------------------------------------------------------------------------------------------------------
 
-[RFC 6265 bis](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-13) defines algorithms in section 5.2 to compute the "site for cookies" for a particular HTTP request.
+[[RFC6265BIS-14|RFC 6265 bis]] defines algorithms in section 5.2 to compute the "site for cookies" for a particular HTTP request.
 The result of this computation is used to determine which cookies are attached to requests based on their `SameSite` attribute.
 Cookies set with `SameSite=Lax/Strict` are sent in requests whose URL is same-site with the corresponding site for cookies, i.e. same-site requests.
 `SameSite=None` cookies are allowed in all contexts, including when the request URL is cross-site with the corresponding site for cookies, i.e. cross-site requests.
@@ -353,7 +487,7 @@ Requiring that the Storage Access API be invoked provides a strong security sign
 Heuristics Temporarily Allowing Third-Party Cookies {#heuristics-temporarily-allowing-third-party-cookies}
 ----------------------------------------------------------------------------------------------------------
 
-Some browsers, including Chrome, have implemented [heuristics](https://developers.google.com/privacy-sandbox/3pcd/temporary-exceptions/heuristics-based-exceptions) that temporarily grant access to third-party cookies based on confidence signals that the cookie is being used for critical user journeys on the site and not for tracking purposes.
+Some browsers, including Chrome, have implemented heuristics that temporarily grant access to third-party cookies based on confidence signals that the cookie is being used for critical user journeys on the site and not for tracking purposes. [[HEURISTICS]]
 
 While these heuristics will help websites stay functional during the period the web is transitioning away from third-party cookies, they have the potential to negate some of the security protections of removing third-party cookies.
 Developers should take care to ensure the flows that rely on these heuristics do not unwittingly expose their site's state to attackers.
@@ -362,7 +496,7 @@ Enterprise Policies {#enterprise-policies}
 ------------------------------------------
 
 Browsers may support enterprise policies which disable third-party cookie blocking entirely.
-One example is the [BlockThirdPartyCookies](https://chromeenterprise.google/policies/#BlockThirdPartyCookies) policy in Chromium.
+One example is the BlockThirdPartyCookies policy in Chromium. [[BLOCKTHIRDPARTYCOOKIES]]
 These policies will be necessary to keep critical business functionality for enterprises during the transition away from third-party cookies, especially in organizations which may not be able to push software updates to account for the change in a reasonable amount of time.
 However, these policies leave enterprise users vulnerable to CSRF or other attacks that result from cross-site boundary leaks.
 Browsers and web developers will have to consider the additional risk these users are subject to.
