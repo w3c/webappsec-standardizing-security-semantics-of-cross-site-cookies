@@ -1,6 +1,6 @@
 <pre class='metadata'>
-Title: Standardizing Cross-Site Cookie Semantics
-Shortname: standizing-cross-site-cookie-semantics
+Title: Standardizing Security Semantics of Cross-Site Cookies
+Shortname: standardizing-security-semantics-of-cross-site-cookies
 Level: none
 Status: w3c/UD
 Group: WebAppSec
