@@ -29,6 +29,9 @@ Markup Shorthands: markdown yes, css no
 <pre class="link-defaults">
 spec:url; type:interface; text:URL
 </pre>
+<pre class="link-defaults">
+spec:url; type:dfn; text:origin
+</pre>
 <pre class="biblio">
 {
   "blockthirdpartycookies": {
@@ -193,7 +196,7 @@ A consequence of this behavior is that unrelated websites can forge credentialed
 Unless the server takes additional steps to review the provenance of the request and reject it if it was sent by an untrusted sender, an attacker-controlled request may be able to interact with the destination server as if it had been issued by the application itself.
 
 Because endpoints on the web are all identified in a common format, the {{URL}}, a malicious site will know the address to which to send a request in order to interact with chosen server-side functionality and issue a request with the user's cookies.
-This makes the web unsafe by default and requires applications to implement defenses to protect themselves from cross-origin attacks.
+This makes the web unsafe by default and requires applications to implement defenses to protect themselves from cross-[=origin=] attacks.
 Applications that fail to do so are commonly vulnerable to well-known, endemic classes of isolation vulnerabilities.
 This includes:
 
@@ -227,7 +230,7 @@ This included blocking the sending of cookies based on a domain-level denylist (
 
 However, these approaches do not fully align their definition of a third-party (or cross-site) cookie with the web's security model.
 The main difference is that privacy-motivated blocking of third-party cookies only disables cookies on requests that are cross-site relative to the top-level document.
-This approach to cookie blocking permits cookies for requests that are same-site relative to the top-level window, even if these requests were made by cross-site frames.
+This approach to cookie blocking permits cookies for requests that are [[RFC6265BIS-14#name-same-site-and-cross-site-re|same-site]] relative to the top-level window, even if these requests were made by cross-site frames.
 
 This results in a situation where the presence of any cross-site frame under a given site allows entities that control content in that frame to exploit cross-site vulnerabilities anywhere under the embedding site.
 Cross-site embedding is common on the web: major use cases of cross-site iframes include advertising, conversion tracking, and widgets such as embedded videos, maps, or social commenting.
@@ -504,4 +507,7 @@ Browsers and web developers will have to consider the additional risk these user
 Acknowledgements {#acks}
 ========================
 
-TODO
+<!-- This document relies upon a number of excellent resources that spell out much of the foundation of our understanding of Spectre’s implications for the web, and justify the mitigation strategies we currently espouse. -->
+The following is an incomplete list of those works:
+
+[[CHIPS]] [[CLICKJACKING]] [[CORS-FOR-DEVELOPERS]] [[CSRF]] [[FULL-THIRD-PARTY-COOKIE-BLOCKING]] [[HARDWARE-LEVEL-VULNERABILITIES]] [[LOGIN-CSRF]] [[LOGOUT-CSRF]] [[POST-SPECTRE-WEB-DEVELOPMENT]] [[SAFE-HTTP-METHODS]] [[STORAGE-ACCESS-API]] [[STORAGE-ACCESS-HEADERS]] [[TARGETED-DEANONYMIZATION]] [[XS-LEAKS]] [[XSHM]] [[XSS]]
