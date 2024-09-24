@@ -1,0 +1,1813 @@
+<!doctype html><html lang="en">
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+  <title>Standardizing Cross-Site Cookie Semantics</title>
+  <meta content="w3c/UD" name="w3c-status">
+  <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-UD" rel="stylesheet">
+  <meta content="Bikeshed version a1dabb26c, updated Mon Jun 17 15:00:44 2024 -0700" name="generator">
+  <link href="http://example.com/url-this-spec-will-live-at" rel="canonical">
+  <meta content="5e5e993116ce0ec492e9a373216ef00917c8b899" name="revision">
+  <meta content="dark light" name="color-scheme">
+  <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
+<style>
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 8px;
+}
+</style>
+<style>/* Boilerplate: style-autolinks */
+.css.css, .property.property, .descriptor.descriptor {
+    color: var(--a-normal-text);
+    font-size: inherit;
+    font-family: inherit;
+}
+.css::before, .property::before, .descriptor::before {
+    content: "‘";
+}
+.css::after, .property::after, .descriptor::after {
+    content: "’";
+}
+.property, .descriptor {
+    /* Don't wrap property and descriptor names */
+    white-space: nowrap;
+}
+.type { /* CSS value <type> */
+    font-style: italic;
+}
+pre .property::before, pre .property::after {
+    content: "";
+}
+[data-link-type="property"]::before,
+[data-link-type="propdesc"]::before,
+[data-link-type="descriptor"]::before,
+[data-link-type="value"]::before,
+[data-link-type="function"]::before,
+[data-link-type="at-rule"]::before,
+[data-link-type="selector"]::before,
+[data-link-type="maybe"]::before {
+    content: "‘";
+}
+[data-link-type="property"]::after,
+[data-link-type="propdesc"]::after,
+[data-link-type="descriptor"]::after,
+[data-link-type="value"]::after,
+[data-link-type="function"]::after,
+[data-link-type="at-rule"]::after,
+[data-link-type="selector"]::after,
+[data-link-type="maybe"]::after {
+    content: "’";
+}
+
+[data-link-type].production::before,
+[data-link-type].production::after,
+.prod [data-link-type]::before,
+.prod [data-link-type]::after {
+    content: "";
+}
+
+[data-link-type=element],
+[data-link-type=element-attr] {
+    font-family: Menlo, Consolas, "DejaVu Sans Mono", monospace;
+    font-size: .9em;
+}
+[data-link-type=element]::before { content: "<" }
+[data-link-type=element]::after  { content: ">" }
+
+[data-link-type=biblio] {
+    white-space: pre;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --selflink-text: black;
+        --selflink-bg: silver;
+        --selflink-hover-text: white;
+    }
+}
+</style>
+<style>/* Boilerplate: style-colors */
+/* Any --*-text not paired with a --*-bg is assumed to have a transparent bg */
+:root {
+    color-scheme: light dark;
+
+    --text: black;
+    --bg: white;
+
+    --unofficial-watermark: url(https://www.w3.org/StyleSheets/TR/2016/logos/UD-watermark);
+
+    --logo-bg: #1a5e9a;
+    --logo-active-bg: #c00;
+    --logo-text: white;
+
+    --tocnav-normal-text: #707070;
+    --tocnav-normal-bg: var(--bg);
+    --tocnav-hover-text: var(--tocnav-normal-text);
+    --tocnav-hover-bg: #f8f8f8;
+    --tocnav-active-text: #c00;
+    --tocnav-active-bg: var(--tocnav-normal-bg);
+
+    --tocsidebar-text: var(--text);
+    --tocsidebar-bg: #f7f8f9;
+    --tocsidebar-shadow: rgba(0,0,0,.1);
+    --tocsidebar-heading-text: hsla(203,20%,40%,.7);
+
+    --toclink-text: var(--text);
+    --toclink-underline: #3980b5;
+    --toclink-visited-text: var(--toclink-text);
+    --toclink-visited-underline: #054572;
+
+    --heading-text: #005a9c;
+
+    --hr-text: var(--text);
+
+    --algo-border: #def;
+
+    --del-text: red;
+    --del-bg: transparent;
+    --ins-text: #080;
+    --ins-bg: transparent;
+
+    --a-normal-text: #034575;
+    --a-normal-underline: #bbb;
+    --a-visited-text: var(--a-normal-text);
+    --a-visited-underline: #707070;
+    --a-hover-bg: rgba(75%, 75%, 75%, .25);
+    --a-active-text: #c00;
+    --a-active-underline: #c00;
+
+    --blockquote-border: silver;
+    --blockquote-bg: transparent;
+    --blockquote-text: currentcolor;
+
+    --issue-border: #e05252;
+    --issue-bg: #fbe9e9;
+    --issue-text: var(--text);
+    --issueheading-text: #831616;
+
+    --example-border: #e0cb52;
+    --example-bg: #fcfaee;
+    --example-text: var(--text);
+    --exampleheading-text: #574b0f;
+
+    --note-border: #52e052;
+    --note-bg: #e9fbe9;
+    --note-text: var(--text);
+    --noteheading-text: hsl(120, 70%, 30%);
+    --notesummary-underline: silver;
+
+    --assertion-border: #aaa;
+    --assertion-bg: #eee;
+    --assertion-text: black;
+
+    --advisement-border: orange;
+    --advisement-bg: #fec;
+    --advisement-text: var(--text);
+    --advisementheading-text: #b35f00;
+
+    --warning-border: red;
+    --warning-bg: hsla(40,100%,50%,0.95);
+    --warning-text: var(--text);
+
+    --amendment-border: #330099;
+    --amendment-bg: #F5F0FF;
+    --amendment-text: var(--text);
+    --amendmentheading-text: #220066;
+
+    --def-border: #8ccbf2;
+    --def-bg: #def;
+    --def-text: var(--text);
+    --defrow-border: #bbd7e9;
+
+    --datacell-border: silver;
+
+    --indexinfo-text: #707070;
+
+    --indextable-hover-text: black;
+    --indextable-hover-bg: #f7f8f9;
+
+    --outdatedspec-bg: rgba(0, 0, 0, .5);
+    --outdatedspec-text: black;
+    --outdated-bg: maroon;
+    --outdated-text: white;
+    --outdated-shadow: red;
+
+    --editedrec-bg: darkorange;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text: #ddd;
+        --bg: black;
+
+        --unofficial-watermark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cg fill='%23100808' transform='translate(200 200) rotate(-45) translate(-200 -200)' stroke='%23100808' stroke-width='3'%3E%3Ctext x='50%25' y='220' style='font: bold 70px sans-serif; text-anchor: middle; letter-spacing: 6px;'%3EUNOFFICIAL%3C/text%3E%3Ctext x='50%25' y='305' style='font: bold 70px sans-serif; text-anchor: middle; letter-spacing: 6px;'%3EDRAFT%3C/text%3E%3C/g%3E%3C/svg%3E");
+
+        --logo-bg: #1a5e9a;
+        --logo-active-bg: #c00;
+        --logo-text: white;
+
+        --tocnav-normal-text: #999;
+        --tocnav-normal-bg: var(--bg);
+        --tocnav-hover-text: var(--tocnav-normal-text);
+        --tocnav-hover-bg: #080808;
+        --tocnav-active-text: #f44;
+        --tocnav-active-bg: var(--tocnav-normal-bg);
+
+        --tocsidebar-text: var(--text);
+        --tocsidebar-bg: #080808;
+        --tocsidebar-shadow: rgba(255,255,255,.1);
+        --tocsidebar-heading-text: hsla(203,20%,40%,.7);
+
+        --toclink-text: var(--text);
+        --toclink-underline: #6af;
+        --toclink-visited-text: var(--toclink-text);
+        --toclink-visited-underline: #054572;
+
+        --heading-text: #8af;
+
+        --hr-text: var(--text);
+
+        --algo-border: #456;
+
+        --del-text: #f44;
+        --del-bg: transparent;
+        --ins-text: #4a4;
+        --ins-bg: transparent;
+
+        --a-normal-text: #6af;
+        --a-normal-underline: #555;
+        --a-visited-text: var(--a-normal-text);
+        --a-visited-underline: var(--a-normal-underline);
+        --a-hover-bg: rgba(25%, 25%, 25%, .2);
+        --a-active-text: #f44;
+        --a-active-underline: var(--a-active-text);
+
+        --borderedblock-bg: rgba(255, 255, 255, .05);
+
+        --blockquote-border: silver;
+        --blockquote-bg: var(--borderedblock-bg);
+        --blockquote-text: currentcolor;
+
+        --issue-border: #e05252;
+        --issue-bg: var(--borderedblock-bg);
+        --issue-text: var(--text);
+        --issueheading-text: hsl(0deg, 70%, 70%);
+
+        --example-border: hsl(50deg, 90%, 60%);
+        --example-bg: var(--borderedblock-bg);
+        --example-text: var(--text);
+        --exampleheading-text: hsl(50deg, 70%, 70%);
+
+        --note-border: hsl(120deg, 100%, 35%);
+        --note-bg: var(--borderedblock-bg);
+        --note-text: var(--text);
+        --noteheading-text: hsl(120, 70%, 70%);
+        --notesummary-underline: silver;
+
+        --assertion-border: #444;
+        --assertion-bg: var(--borderedblock-bg);
+        --assertion-text: var(--text);
+
+        --advisement-border: orange;
+        --advisement-bg: #222218;
+        --advisement-text: var(--text);
+        --advisementheading-text: #f84;
+
+        --warning-border: red;
+        --warning-bg: hsla(40,100%,20%,0.95);
+        --warning-text: var(--text);
+
+        --amendment-border: #330099;
+        --amendment-bg: #080010;
+        --amendment-text: var(--text);
+        --amendmentheading-text: #cc00ff;
+
+        --def-border: #8ccbf2;
+        --def-bg: #080818;
+        --def-text: var(--text);
+        --defrow-border: #136;
+
+        --datacell-border: silver;
+
+        --indexinfo-text: #aaa;
+
+        --indextable-hover-text: var(--text);
+        --indextable-hover-bg: #181818;
+
+        --outdatedspec-bg: rgba(255, 255, 255, .5);
+        --outdatedspec-text: black;
+        --outdated-bg: maroon;
+        --outdated-text: white;
+        --outdated-shadow: red;
+
+        --editedrec-bg: darkorange;
+    }
+    /* In case a transparent-bg image doesn't expect to be on a dark bg,
+       which is quite common in practice... */
+    img { background: white; }
+}
+</style>
+<style>/* Boilerplate: style-counters */
+body {
+    counter-reset: example figure issue;
+}
+.issue {
+    counter-increment: issue;
+}
+.issue:not(.no-marker)::before {
+    content: "Issue " counter(issue);
+}
+
+.example {
+    counter-increment: example;
+}
+.example:not(.no-marker)::before {
+    content: "Example " counter(example);
+}
+.invalid.example:not(.no-marker)::before,
+.illegal.example:not(.no-marker)::before {
+    content: "Invalid Example" counter(example);
+}
+
+figcaption {
+    counter-increment: figure;
+}
+figcaption:not(.no-marker)::before {
+    content: "Figure " counter(figure) " ";
+}
+</style>
+<style>/* Boilerplate: style-dfn-panel */
+:root {
+    --dfnpanel-bg: #ddd;
+    --dfnpanel-text: var(--text);
+    --dfnpanel-target-bg: #ffc;
+    --dfnpanel-target-outline: orange;
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --dfnpanel-bg: #222;
+        --dfnpanel-text: var(--text);
+        --dfnpanel-target-bg: #333;
+        --dfnpanel-target-outline: silver;
+    }
+}
+.dfn-panel {
+    position: absolute;
+    z-index: 35;
+    width: 20em;
+    width: 300px;
+    height: auto;
+    max-height: 500px;
+    overflow: auto;
+    padding: 0.5em 0.75em;
+    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+    background: var(--dfnpanel-bg);
+    color: var(--dfnpanel-text);
+    border: outset 0.2em;
+    white-space: normal; /* in case it's moved into a pre */
+}
+.dfn-panel:not(.on) { display: none; }
+.dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
+.dfn-panel > b { display: block; }
+.dfn-panel a { color: var(--dfnpanel-text); }
+.dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
+.dfn-panel a:focus {
+    outline: 5px auto Highlight;
+    outline: 5px auto -webkit-focus-ring-color;
+}
+.dfn-panel > b + b { margin-top: 0.25em; }
+.dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
+.dfn-panel li a {
+    max-width: calc(300px - 1.5em - 1em);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dfn-panel.activated {
+    display: inline-block;
+    position: fixed;
+    left: 8px;
+    bottom: 2em;
+    margin: 0 auto;
+    max-width: calc(100vw - 1.5em - .4em - .5em);
+    max-height: 30vh;
+    transition: left 1s ease-out, bottom 1s ease-out;
+}
+
+.dfn-panel .link-item:hover {
+    text-decoration: underline;
+}
+.dfn-panel .link-item .copy-icon {
+    opacity: 0;
+}
+.dfn-panel .link-item:hover .copy-icon,
+.dfn-panel .link-item .copy-icon:focus {
+    opacity: 1;
+}
+
+.dfn-panel .copy-icon {
+    display: inline-block;
+    margin-right: 0.5em;
+    width: 0.85em;
+    height: 1em;
+    border-radius: 3px;
+    background-color: #ccc;
+    cursor: pointer;
+}
+
+.dfn-panel .copy-icon .icon {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.dfn-panel .copy-icon .icon::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid black;
+    background-color: #ccc;
+    opacity: 0.25;
+    transform: translate(3px, -3px);
+}
+
+.dfn-panel .copy-icon:active .icon::before {
+    opacity: 1;
+}
+
+.dfn-paneled[role="button"] { cursor: help; }
+
+.highlighted {
+    animation: target-fade 3s;
+}
+
+@keyframes target-fade {
+    from {
+        background-color: var(--dfnpanel-target-bg);
+        outline: 5px solid var(--dfnpanel-target-outline);
+    }
+    to {
+        color: var(--a-normal-text);
+        background-color: transparent;
+        outline: transparent;
+    }
+}
+</style>
+<style>/* Boilerplate: style-issues */
+a[href].issue-return {
+    float: right;
+    float: inline-end;
+    color: var(--issueheading-text);
+    font-weight: bold;
+    text-decoration: none;
+}
+</style>
+<style>/* Boilerplate: style-md-lists */
+/* This is a weird hack for me not yet following the commonmark spec
+   regarding paragraph and lists. */
+[data-md] > :first-child {
+    margin-top: 0;
+}
+[data-md] > :last-child {
+    margin-bottom: 0;
+}
+</style>
+<style>/* Boilerplate: style-ref-hints */
+:root {
+    --ref-hint-bg: #ddd;
+    --ref-hint-text: var(--text);
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ref-hint-bg: #222;
+        --ref-hint-text: var(--text);
+    }
+}
+
+.ref-hint {
+    display: inline-block;
+    position: absolute;
+    z-index: 35;
+    width: 20em;
+    width: 300px;
+    height: auto;
+    max-height: 500px;
+    overflow: auto;
+    padding: 0.5em 0.5em;
+    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+    background: var(--ref-hint-bg);
+    color: var(--ref-hint-text);
+    border: outset 0.2em;
+    white-space: normal; /* in case it's moved into a pre */
+}
+
+.ref-hint * { margin: 0; padding: 0; text-indent: 0; }
+
+.ref-hint ul { padding: 0 0 0 1em; list-style: none; }
+</style>
+<style>/* Boilerplate: style-selflinks */
+:root {
+    --selflink-text: white;
+    --selflink-bg: gray;
+    --selflink-hover-text: black;
+}
+.heading, .issue, .note, .example, li, dt {
+    position: relative;
+}
+a.self-link {
+    position: absolute;
+    top: 0;
+    left: calc(-1 * (3.5rem - 26px));
+    width: calc(3.5rem - 26px);
+    height: 2em;
+    text-align: center;
+    border: none;
+    transition: opacity .2s;
+    opacity: .5;
+}
+a.self-link:hover {
+    opacity: 1;
+}
+.heading > a.self-link {
+    font-size: 83%;
+}
+.example > a.self-link,
+.note > a.self-link,
+.issue > a.self-link {
+    /* These blocks are overflow:auto, so positioning outside
+       doesn't work. */
+    left: auto;
+    right: 0;
+}
+li > a.self-link {
+    left: calc(-1 * (3.5rem - 26px) - 2em);
+}
+dfn > a.self-link {
+    top: auto;
+    left: auto;
+    opacity: 0;
+    width: 1.5em;
+    height: 1.5em;
+    background: var(--selflink-bg);
+    color: var(--selflink-text);
+    font-style: normal;
+    transition: opacity .2s, background-color .2s, color .2s;
+}
+dfn:hover > a.self-link {
+    opacity: 1;
+}
+dfn > a.self-link:hover {
+    color: var(--selflink-hover-text);
+}
+
+a.self-link::before            { content: "¶"; }
+.heading > a.self-link::before { content: "§"; }
+dfn > a.self-link::before      { content: "#"; }
+</style>
+ <body class="h-entry">
+  <div class="head">
+   <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
+   <h1 class="p-name no-ref" id="title">Standardizing Cross-Site Cookie Semantics</h1>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#UD">Unofficial Proposal Draft</a>, <time class="dt-updated" datetime="2024-06-27">27 June 2024</time></p>
+   <details open>
+    <summary>More details about this document</summary>
+    <div data-fill-with="spec-metadata">
+     <dl>
+      <dt>This version:
+      <dd><a class="u-url" href="http://example.com/url-this-spec-will-live-at">http://example.com/url-this-spec-will-live-at</a>
+      <dt>Feedback:
+      <dd><span><a href="mailto:public-webappsec@w3.org?subject=%5Bstandizing-cross-site-cookie-semantics%5D%20YOUR%20TOPIC%20HERE">public-webappsec@w3.org</a> with subject line “<kbd>[standizing-cross-site-cookie-semantics] <i data-lt>… message topic …</i></kbd>” (<a href="https://lists.w3.org/Archives/Public/public-webappsec/" rel="discussion">archives</a>)</span>
+      <dt>Issue Tracking:
+      <dd><a href="https://github.com/org/repo-name/issues/">GitHub</a>
+      <dt class="editor">Editors:
+      <dd class="editor p-author h-card vcard"><span class="p-name fn"></span>
+      <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:dylancutler@google.com">Dylan Cutler</a> (<span class="p-org org">Google</span>)
+      <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:aaj@google.com">Artur Janc</a> (<span class="p-org org">Google</span>)
+     </dl>
+    </div>
+   </details>
+   <div data-fill-with="warning"></div>
+   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/policies/#copyright">Copyright</a> © 2024 <a href="https://www.w3.org/">World Wide Web Consortium</a>. <abbr title="World Wide Web Consortium">W3C</abbr><sup>®</sup> <a href="https://www.w3.org/policies/#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/policies/#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/copyright/software-license/" rel="license" title="W3C Software and Document License">permissive document license</a> rules apply. </p>
+   <hr title="Separator for header">
+  </div>
+  <div class="p-summary" data-fill-with="abstract">
+   <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
+   <p>Cookies are the de facto standard for authentication on the web and are commonly used by applications to store tokens that carry information about the user’s identity and automatically attach them to matching HTTP requests.
+However, because cookies predate the existence of the web as an application platform, they behave in ways that are known to cause security and privacy problems for the modern web.</p>
+   <p>From a privacy perspective, the web’s original, long-standing behavior of allowing cookies to be sent in third-party contexts has been recognized as a privacy concern because it allows tracking users across sites as they browse the web.</p>
+   <p>From a security perspective, the ability to send requests with cookies to arbitrary cross-site destinations has historically been the root cause of a number of endemic web vulnerability classes, including cross-site request forgery, clickjacking, cross-site script inclusion, and various cross-site leaks.</p>
+   <p>As browsers pursue a set of far-reaching efforts to comprehensively block or phase out cookies in third-party contexts (Full Third-Party Cookie Blocking in WebKit, Total Cookie Protection in Firefox, Privacy Sandbox in Chrome), it’s important to review the "end state" for cookies that maintains the desired security and privacy properties while maintaining compatibility with the existing web wherever possible.
+This is particularly important given that browser handling of cookies has diverged in recent years, introducing substantial compatibility problems for web developers.</p>
+   <p>This document aims to discuss current approaches and elucidate the cookie semantics that we want the web to have in the long term, focusing on the properties necessary for the web to offer robust web application security guarantees.
+It also contends with the existence of a variety of mechanisms to re-enable third-party cookies, offering guidance for how they should be implemented without regressing the security posture of the web platform.</p>
+  </div>
+  <h2 class="no-num no-toc no-ref heading settled" id="sotd"><span class="content">Status of this document</span></h2>
+  <div data-fill-with="status">
+   <p></p>
+  </div>
+  <div data-fill-with="at-risk"></div>
+  <nav data-fill-with="table-of-contents" id="toc">
+   <h2 class="no-num no-toc no-ref" id="contents">Table of Contents</h2>
+   <ol class="toc" role="directory">
+    <li>
+     <a href="#intro"><span class="secno">1</span> <span class="content">Introduction</span></a>
+     <ol class="toc">
+      <li><a href="#summary"><span class="secno">1.1</span> <span class="content">Summary</span></a>
+      <li><a href="#security-concerns"><span class="secno">1.2</span> <span class="content">Security Concerns With Attaching Cookies On Cross-Site Requests</span></a>
+      <li><a href="#gaps-in-third-party-cookie-blocking"><span class="secno">1.3</span> <span class="content">Gaps in Third-Party Cookie Blocking</span></a>
+     </ol>
+    <li>
+     <a href="#how-should-cookies-behave"><span class="secno">2</span> <span class="content">How Should Cookies Behave?</span></a>
+     <ol class="toc">
+      <li><a href="#existing-cookie-models"><span class="secno">2.1</span> <span class="content">Existing cookie models</span></a>
+      <li><a href="#same-site-strict"><span class="secno">2.2</span> <span class="content">SameSite=Strict</span></a>
+      <li><a href="#same-site-lax"><span class="secno">2.3</span> <span class="content">SameSite=Lax</span></a>
+      <li><a href="#same-site-lax-with-exceptions"><span class="secno">2.4</span> <span class="content">SameSite=Lax with Compatibility Exceptions</span></a>
+      <li><a href="#third-party-cookie-blocking"><span class="secno">2.5</span> <span class="content">Third-Party Cookie Blocking</span></a>
+      <li><a href="#same-site-none"><span class="secno">2.6</span> <span class="content">SameSite=None</span></a>
+      <li><a href="#overview"><span class="secno">2.7</span> <span class="content">Overview</span></a>
+      <li><a href="#end-state-security-properties"><span class="secno">2.8</span> <span class="content">End State Security Properties</span></a>
+     </ol>
+    <li>
+     <a href="#cross-site-interaction-scenarios"><span class="secno">3</span> <span class="content">Cross-Site Interaction Scenarios</span></a>
+     <ol class="toc">
+      <li>
+       <a href="#aba-embeds"><span class="secno">3.1</span> <span class="content">Same-Site Embeds with Cross-Site Ancestors (A>B>A embeds)</span></a>
+       <ol class="toc">
+        <li><a href="#aba-embeds-security"><span class="secno">3.1.1</span> <span class="content">Security Considerations</span></a>
+        <li><a href="#aba-embeds-recommendation"><span class="secno">3.1.2</span> <span class="content">Recommendation</span></a>
+       </ol>
+      <li>
+       <a href="#navigating-x-site-frame"><span class="secno">3.2</span> <span class="content">Navigating a Cross-Site Embed to a Same-Site Frame</span></a>
+       <ol class="toc">
+        <li><a href="#navigating-x-site-frame-security"><span class="secno">3.2.1</span> <span class="content">Security Considerations</span></a>
+        <li><a href="#navigating-x-site-frame-recommendation"><span class="secno">3.2.2</span> <span class="content">Recommendation</span></a>
+       </ol>
+      <li>
+       <a href="#top-level-post"><span class="secno">3.3</span> <span class="content">Top-Level Cross-Site <code>POST</code> Requests</span></a>
+       <ol class="toc">
+        <li><a href="#top-level-post-security"><span class="secno">3.3.1</span> <span class="content">Security Considerations</span></a>
+        <li><a href="#top-level-post-recommendation"><span class="secno">3.3.2</span> <span class="content">Recommendation</span></a>
+       </ol>
+     </ol>
+    <li>
+     <a href="#implementation-considerations"><span class="secno">4</span> <span class="content">Implementation Considerations</span></a>
+     <ol class="toc">
+      <li><a href="#changing-third-party-cookie-blocking"><span class="secno">4.1</span> <span class="content">Changing Third-Party Cookie Blocking to Use "Site For Cookies"</span></a>
+      <li><a href="#rsa-for-aba"><span class="secno">4.2</span> <span class="content">Request Storage Access for A>B>A Embeds</span></a>
+      <li><a href="#heuristics-temporarily-allowing-third-party-cookies"><span class="secno">4.3</span> <span class="content">Heuristics Temporarily Allowing Third-Party Cookies</span></a>
+      <li><a href="#enterprise-policies"><span class="secno">4.4</span> <span class="content">Enterprise Policies</span></a>
+     </ol>
+    <li><a href="#acks"><span class="secno">5</span> <span class="content">Acknowledgements</span></a>
+    <li>
+     <a href="#w3c-conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
+     <ol class="toc">
+      <li><a href="#w3c-conventions"><span class="secno"></span> <span class="content">Document conventions</span></a>
+     </ol>
+    <li>
+     <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
+     <ol class="toc">
+      <li><a href="#index-defined-elsewhere"><span class="secno"></span> <span class="content">Terms defined by reference</span></a>
+     </ol>
+    <li>
+     <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
+     <ol class="toc">
+      <li><a href="#normative"><span class="secno"></span> <span class="content">Normative References</span></a>
+      <li><a href="#informative"><span class="secno"></span> <span class="content">Informative References</span></a>
+     </ol>
+   </ol>
+  </nav>
+  <main>
+   <h2 class="heading settled" data-level="1" id="intro"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#intro"></a></h2>
+   <p>Major browsers have shipped or announced plans to restrict cookies in <a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis#name-same-site-and-cross-site-re">cross-site</a> contexts to improve the privacy of their users and protect them from cross-site tracking. <a data-link-type="biblio" href="#biblio-w3c-privacy" title="Privacy | Our mission | W3C">[W3C-PRIVACY]</a> However, the details of which requests are considered cross-site vary between browsers; as a result, browsers' cookie blocking behaviors have subtle differences.
+Because of the importance of cookies to the web platform, and the substantial amount of existing web content and functionality that depends on the presence of cookies in cross-site contexts, it is important to converge on interoperable cookie semantics that uphold the platform’s security and privacy guarantees.</p>
+   <p>However, to make informed decisions that help browser vendors converge on consistent cookie semantics, it seems necessary to review the privacy and security goals of third-party cookie blocking.
+Specifically, we need to evaluate how the presence of cookies in cross-site contexts results in a number of endemic web vulnerabilities, undermining the security of existing web applications and requiring costly application-level mitigations in all sensitive web services.
+This analysis helps guide our decisions about where cookies may be safely allowed in cross-site contexts, and where browsers need to block them to enforce a robust security boundary for web content.</p>
+   <p>The goal of this document is to promote interoperability and specify cross-site cookie blocking semantics for cases where browser behavior diverges, while maintaining the privacy and security properties of cross-site cookie blocking.</p>
+   <h3 class="heading settled" data-level="1.1" id="summary"><span class="secno">1.1. </span><span class="content">Summary</span><a class="self-link" href="#summary"></a></h3>
+   <p>This proposal aims to:</p>
+   <ol>
+    <li data-md>
+     <p>Develop a shared understanding of cross-site cookie blocking and its potential security benefits for browser implementers, specification authors, and web developers.</p>
+    <li data-md>
+     <p>Support these security benefits and specify common rules and semantics for cross-site cookie blocking, for future standardization in HTML, Fetch and the Cookies RFC.</p>
+    <li data-md>
+     <p>Discuss how new web features such as the Storage Access API, Cookies Having Independent Partitioned State (CHIPS), and related mechanisms might interact with cross-site cookie blocking to restore access to blocked <code>SameSite=None</code> cookies if needed, while upholding the privacy and security principles of cross-site cookie blocking. <a data-link-type="biblio" href="#biblio-storage-access-api" title="The Storage Access API">[STORAGE-ACCESS-API]</a> <a data-link-type="biblio" href="#biblio-chips" title="CHIPS (Cookies Having Independent Partitioned State)">[CHIPS]</a></p>
+   </ol>
+   <h3 class="heading settled" data-level="1.2" id="security-concerns"><span class="secno">1.2. </span><span class="content">Security Concerns With Attaching Cookies On Cross-Site Requests</span><a class="self-link" href="#security-concerns"></a></h3>
+   <p>Cookies have traditionally followed the <a href="https://w3c.github.io/webappsec-cors-for-developers/#csrf">ambient authority security model</a>: once a cookie has been set for a given scope (generally, a domain and path), it would be attached on all requests to that scope regardless of the sender of the request. <a data-link-type="biblio" href="#biblio-cors-for-developers" title="CORS for Developers">[CORS-FOR-DEVELOPERS]</a> A consequence of this behavior is that unrelated websites can forge credentialed requests to any application to which a user is logged in; these requests, authenticated with the user’s "first-party" credentials carried in a cookie will be virtually indistinguishable to the destination web server from requests generated in a first-party context.
+Unless the server takes additional steps to review the provenance of the request and reject it if it was sent by an untrusted sender, an attacker-controlled request may be able to interact with the destination server as if it had been issued by the application itself.</p>
+   <p>Because endpoints on the web are all identified in a common format, the <code class="idl"><a data-link-type="idl" href="https://url.spec.whatwg.org/#url" id="ref-for-url">URL</a></code>, a malicious site will know the address to which to send a request in order to interact with chosen server-side functionality and issue a request with the user’s cookies.
+This makes the web unsafe by default and requires applications to implement defenses to protect themselves from cross-<a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin">origin</a> attacks.
+Applications that fail to do so are commonly vulnerable to well-known, endemic classes of isolation vulnerabilities.
+This includes:</p>
+   <ul>
+    <li data-md>
+     <p>Cross-site request forgery <a data-link-type="biblio" href="#biblio-csrf" title="Cross Site Request Forgery (CSRF)">[CSRF]</a>, allowing triggering arbitrary state-changing actions on the user’s behalf.</p>
+    <li data-md>
+     <p>Clickjacking <a data-link-type="biblio" href="#biblio-clickjacking" title="Clickjacking">[CLICKJACKING]</a>, tricking the user to click on a UI element to trigger an unwanted action.</p>
+    <li data-md>
+     <p>Cross-site script inclusion <a data-link-type="biblio" href="#biblio-xss" title="Cross Site Scripting (XSS)">[XSS]</a>, leaking authenticated data from responses parseable as JavaScript.</p>
+    <li data-md>
+     <p>Cross-site leaks <a data-link-type="biblio" href="#biblio-xs-leaks" title="XS-Leaks Wiki">[XS-LEAKS]</a>, including XS-Search and various web-level timing attacks, revealing application-specific data belonging to the logged in user.</p>
+     <ul>
+      <li data-md>
+       <p>As a special case, the <a href="https://www.w3.org/TR/post-spectre-webdev/#threat-model">exploitation of Spectre against web resources</a> also relies on the attacker loading an eligible authenticated resource into an attacker-controlled renderer process and reading it from memory using hardware-level vulnerabilities. <a data-link-type="biblio" href="#biblio-post-spectre-web-development" title="Post-Spectre Web Development">[POST-SPECTRE-WEB-DEVELOPMENT]</a> <a data-link-type="biblio" href="#biblio-hardware-level-vulnerabilities" title="Transient execution CPU vulnerability">[HARDWARE-LEVEL-VULNERABILITIES]</a></p>
+     </ul>
+   </ul>
+   <p>In addition to these widely recognized web application vulnerability classes, the sending of authenticated cross-site requests has also been demonstrated to introduce other security and privacy risks, such as:</p>
+   <ul>
+    <li data-md>
+     <p>Login status detection <a data-link-type="biblio" href="#biblio-xshm" title="Cross Site History Manipulation (XSHM)">[XSHM]</a>, permitting an attacker to learn whether the user is currently logged into a chosen website.</p>
+    <li data-md>
+     <p>Targeted deanonymization <a data-link-type="biblio" href="#biblio-targeted-deanonymization" title="Targeted Deanonymization via the Cache Side Channel: Attacks and Defenses">[TARGETED-DEANONYMIZATION]</a>, to determine if the user is logged into a specific account on a target website.</p>
+    <li data-md>
+     <p>Login CSRF <a data-link-type="biblio" href="#biblio-login-csrf" title="Cross-Site Request Forgery Prevention Cheat Sheet">[LOGIN-CSRF]</a>, allowing the attacker to log the user into an attacker-controlled account.</p>
+    <li data-md>
+     <p>Logout CSRF <a data-link-type="biblio" href="#biblio-logout-csrf" title="How does a CSRF logout pose a potential threat to a website?">[LOGOUT-CSRF]</a>, to end a user’s session in an unrelated web application.</p>
+   </ul>
+   <p>Put simply, the traditional behavior of cookies has consistently posed substantial security problems for web applications and significantly impacted the security and privacy properties of the web platform.</p>
+   <h3 class="heading settled" data-level="1.3" id="gaps-in-third-party-cookie-blocking"><span class="secno">1.3. </span><span class="content">Gaps in Third-Party Cookie Blocking</span><a class="self-link" href="#gaps-in-third-party-cookie-blocking"></a></h3>
+   <p>In recent years some web browsers have responded to cross-site tracking concerns by employing various restrictions to remove cookies on cross-site subresource requests.
+This included blocking the sending of cookies based on a domain-level denylist (either global or built locally on-device) and, ultimately, blocking all cookies from third-party contexts. <a data-link-type="biblio" href="#biblio-full-third-party-cookie-blocking" title="Full Third-Party Cookie Blocking and More">[FULL-THIRD-PARTY-COOKIE-BLOCKING]</a></p>
+   <p>However, these approaches do not fully align their definition of a third-party (or cross-site) cookie with the web’s security model.
+The main difference is that privacy-motivated blocking of third-party cookies only disables cookies on requests that are cross-site relative to the top-level document.
+This approach to cookie blocking permits cookies for requests that are <a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis#name-same-site-and-cross-site-re">same-site</a> relative to the top-level window, even if these requests were made by cross-site frames.</p>
+   <p>This results in a situation where the presence of any cross-site frame under a given site allows entities that control content in that frame to exploit cross-site vulnerabilities anywhere under the embedding site.
+Cross-site embedding is common on the web: major use cases of cross-site iframes include advertising, conversion tracking, and widgets such as embedded videos, maps, or social commenting.
+This exposes a large number of websites to risks associated with authenticated cross-site requests.</p>
+   <p>Third-party cookie blocking also allows attaching cookies to cross-site top-level navigation requests, including those using unsafe HTTP methods (e.g. POST).
+While permitting this is required to maintain important use cases on the web, this behavior allows exploiting CSRF vulnerabilities through top-level form submissions using the HTTP POST method.
+This is discussed more in detail in <a href="#cross-site-interaction-scenarios">Cross-site Interaction Scenarios</a> below.</p>
+   <h2 class="heading settled" data-level="2" id="how-should-cookies-behave"><span class="secno">2. </span><span class="content">How Should Cookies Behave?</span><a class="self-link" href="#how-should-cookies-behave"></a></h2>
+   <h3 class="heading settled" data-level="2.1" id="existing-cookie-models"><span class="secno">2.1. </span><span class="content">Existing cookie models</span><a class="self-link" href="#existing-cookie-models"></a></h3>
+   <p>Over time, the web has accumulated a number of features that limit the situations in which a cookie can be attached to a cross-site request, including opt-in protections using the <a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis#name-the-samesite-attribute-2">the SameSite Attribute</a>, and default restrictions enabled in several web browsers.
+In this section we briefly cover these behaviors and propose a model which maintains both the security and privacy properties we want to uphold on the web.</p>
+   <h3 class="heading settled" data-level="2.2" id="same-site-strict"><span class="secno">2.2. </span><span class="content">SameSite=Strict</span><a class="self-link" href="#same-site-strict"></a></h3>
+   <p>The <code>SameSite=Strict</code> cookie attribute prevents the cookie from being attached on any request that wasn’t issued by the same site as its destination.
+This robustly protects websites from cookie-based cross-site attacks because a malicious website isn’t able to issue any credentialed requests to a cross-site destination.</p>
+   <p>However, this behavior significantly changes some long-established cookie behaviors on which many web services have come to depend.
+For example, by blocking cookies on top-level navigations it results in any cross-site navigation to be treated as unauthenticated, even if the user is logged into the destination site.
+This limits the utility of <code>SameSite=Strict</code> cookies and has led to low adoption of this protection across the web.</p>
+   <h3 class="heading settled" data-level="2.3" id="same-site-lax"><span class="secno">2.3. </span><span class="content">SameSite=Lax</span><a class="self-link" href="#same-site-lax"></a></h3>
+   <p>The <code>SameSite=Lax</code> attribute prevents cookies from being attached on cross-site resource requests (such as frames or images), but allows the cookie to be sent on top-level navigations using safe HTTP methods, such as <code>GET</code>.</p>
+   <p>This protects cross-site resources from being embedded with cookies and protects web services from most CSRF vulnerabilities (due to restricting cross-site POST requests).
+However, by allowing GET-based navigations, it permits websites to retain authentication after cross-site navigations, improving compatibility with existing web content.</p>
+   <h3 class="heading settled" data-level="2.4" id="same-site-lax-with-exceptions"><span class="secno">2.4. </span><span class="content">SameSite=Lax with Compatibility Exceptions</span><a class="self-link" href="#same-site-lax-with-exceptions"></a></h3>
+   <p>In an effort to <a href="https://web.dev/articles/samesite-cookies-explained#default-behavior-changes">roll out protections based on SameSite=Lax cookies by default to the web</a>, Google Chrome has implemented a cookie mode based on SameSite=Lax behavior, but with two additional relaxations:</p>
+   <ul>
+    <li data-md>
+     <p><a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis#name-lax-allowing-unsafe-enforce">Lax-allowing-unsafe</a>: Allow top-level cross-site navigations using unsafe methods (in practice, <code>POST</code>) to carry a cookie if the cookie had been created recently (specifically, if the cookie age is 2 minutes or less). <a data-link-type="biblio" href="#biblio-safe-http-methods" title="Safe (HTTP Methods)">[SAFE-HTTP-METHODS]</a> This change was made because a number of common payment flows rely on top-level <code>POST</code> navigations and depend on the presence of cookies.</p>
+    <li data-md>
+     <p>Re-attaching credentials after cross-site to same-site redirects: Some websites contain resources and iframes pointing to cross-site destinations which then redirect back to an endpoint within the top-level site. The <code>SameSite=Lax</code> behavior is to remove cookies on the same-site redirect, which results in load failures for resources which require authentication; this relaxation was made to prevent websites depending on this pattern from breaking. <a data-link-type="biblio" href="#biblio-cookie-samesite-bug" title="Cookie SameSite: redirect checking causes site breakag">[COOKIE-SAMESITE-BUG]</a></p>
+   </ul>
+   <p>Both of these exceptions were made as a compromise between security and compatibility, in the interest of switching to safer default cookie semantics based on the <code>SameSite=Lax</code> model, without affecting legitimate, commonly used patterns.</p>
+   <h3 class="heading settled" data-level="2.5" id="third-party-cookie-blocking"><span class="secno">2.5. </span><span class="content">Third-Party Cookie Blocking</span><a class="self-link" href="#third-party-cookie-blocking"></a></h3>
+   <p>The most common implementation of third-party cookie blocking restricts requests from carrying cookies if they are cross-site relative to the top-level window.
+However, it permits requests to destinations same-site with the top-level window to carry cookies, even if these requests were sent by cross-site iframes.
+This permits cross-site iframes to issue credentialed requests to the site of their top-level embedder, allowing them to exploit cross-site vulnerabilities.</p>
+   <h3 class="heading settled" data-level="2.6" id="same-site-none"><span class="secno">2.6. </span><span class="content">SameSite=None</span><a class="self-link" href="#same-site-none"></a></h3>
+   <p>As part of the SameSite=Lax-by-default rollout, Google Chrome made it possible for developers to disable <code>SameSite</code> restrictions on cookies and permit these cookies to be sent on cross-site requests. <a data-link-type="biblio" href="#biblio-samesite-cookies-explained" title="SameSite cookies explained">[SAMESITE-COOKIES-EXPLAINED]</a> This behavior, made possible by setting cookies as <code>SameSite=None</code>, is generally incompatible with the web’s privacy model because it allows the creation of third-party cookies that retain state across top-level contexts. Similarly, the current behavior of SameSite=None cookies isn’t aligned with the desired cookie security model because it removes all cookie-level protections against cross-site attacks.
+To re-align with the desired security model, the behavior of these cookies needs to change as part of privacy efforts.</p>
+   <p><code>SameSite=None</code> cookies do have an important role to play on the web – they are necessary to allow developers to relax <code>SameSite</code> restrictions on cookies in places where such relaxations are compatible with the web’s security and privacy goals.
+We provide a detailed discussion of these scenarios in the <a href="#cross-site-interaction-scenarios">Cross-Site Interaction Scenarios</a> section below.</p>
+   <h3 class="heading settled" data-level="2.7" id="overview"><span class="secno">2.7. </span><span class="content">Overview</span><a class="self-link" href="#overview"></a></h3>
+   <table>
+    <tbody>
+     <tr>
+      <th> Mechanism 
+      <th> Security protections 
+      <th> Privacy protections 
+      <th> Compatibility 
+     <tr>
+      <td> <code>SameSite=Strict</code> 
+      <td> High 
+      <td> Yes 
+      <td> Low 
+     <tr>
+      <td> <code>SameSite=Lax</code> 
+      <td> High 
+      <td> Yes 
+      <td> Medium 
+     <tr>
+      <td> <code>SameSite=Lax</code> with exceptions 
+      <td> Medium 
+      <td> Yes 
+      <td> High 
+     <tr>
+      <td> Third-party cookie blocking 
+      <td> Low 
+      <td> Yes 
+      <td> High 
+     <tr>
+      <td> <code>SameSite=None</code> 
+      <td> None 
+      <td> No 
+      <td> High 
+   </table>
+   <p>We believe that a successful cookie model needs to balance security and privacy with web compatibility.
+For example, given that many websites rely on receiving credentials when they’re navigated to from a cross-site destination, we couldn’t require the web to switch to <code>SameSite=Strict</code> cookies, as that would remove authentication after such navigations.
+This would favor security at the expense of compatibility and usability, and would arguably be detrimental to the web platform.</p>
+   <p>Similarly, the third-party cookie blocking approach can be seen as prioritizing compatibility over security.
+While it upholds privacy protections against cross-site tracking, it isn’t a robust security boundary because it allows cross-site attacks from embedded content.
+Under the web’s principle of composability it must be possible for websites to safely embed cross-site content without exposing themselves to attacks; as such, we believe that current third-party blocking implementations are insufficient from a security perspective.</p>
+   <p>Thus, the approach we should aim for falls somewhere between the <a href="#same-site-lax">SameSite=Lax</a> and <a href="#same-site-lax-with-exceptions">SameSite=Lax with exceptions</a> behaviors, as discussed below.</p>
+   <h3 class="heading settled" data-level="2.8" id="end-state-security-properties"><span class="secno">2.8. </span><span class="content">End State Security Properties</span><a class="self-link" href="#end-state-security-properties"></a></h3>
+   <p>In addition to the privacy goals of preventing cross-site tracking, from a security perspective, there are two core restrictions that the web platform needs to enforce on all cookies:</p>
+   <ol>
+    <li data-md>
+     <p>It should be impossible to make credentialed cross-site subresource requests (e.g. to load an image or iframe), unless the destination endpoint explicitly opts into being loaded with credentials in a cross-site context (for example, through calling <code class="idl"><a data-link-type="idl" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess">requestStorageAccess</a></code> or using Storage Access API headers. <a data-link-type="biblio" href="#biblio-storage-access-headers" title="Storage Access Headers Proposal">[STORAGE-ACCESS-HEADERS]</a></p>
+    <li data-md>
+     <p>It should be impossible to make credentialed cross-site requests with unsafe methods, such as POST. Practically, this means that authenticated top-level navigations should only be allowed through GET requests.</p>
+   </ol>
+   <p><b>Why can’t we allow developers to opt out of platform-level cookie security/privacy restrictions?</b></p>
+   <p>An important question is why the web platform should prevent developers from relaxing the security and privacy properties of cookies if they intentionally wish to do so.</p>
+   <p>From a privacy perspective, the answer is straightforward: the use of cookies in third-party contexts allows the creation of identifiers shared across top-level sites that can be used to track the user’s cross-site activity.
+The web platform aims to prevent this from happening.</p>
+   <p>From a security perspective, the chief concern is that relaxing a site’s cookie properties is likely to expose the site to cross-site vulnerabilities in ways that are difficult for developers to understand, especially in a world where cookie restrictions apply by default.
+This is problematic because of a combination of the following factors:</p>
+   <ul>
+    <li data-md>
+     <p>Cookies are a coarse-grained mechanism: It’s common for a single authentication cookie to be used for a whole origin, or even site through the use of domain-wide cookies. <a data-link-type="biblio" href="#biblio-using-http-cookies" title="Using HTTP Cookies">[USING-HTTP-COOKIES]</a> If a developer relaxes cookie protections to allow receiving credentialed cross-site requests to a single endpoint on their origin, they will expose their entire origin to cross-site attacks.</p>
+    <li data-md>
+     <p>Developers frequently need to allow credentialed cross-site interactions to at least a small number of endpoints.
+For example, an application may provide an authenticated iframe, CORS API, or resource embeddable by a small number of partner sites, or permit A>B>A-style embedding scenarios.
+If any single such pattern requires relaxing cookie security properties, it will be common for developers to broadly opt out of default platform cookie protections, unnecessarily reducing the security of their applications.</p>
+   </ul>
+   <p>Because the main mechanism to relax cookie restrictions is to set them as <code>SameSite=None</code>, we thus need to make sure that the security properties of <code>SameSite=None</code> cookies are sufficiently robust.
+That is, we aim to make the "least safe" cookie behavior that developers can opt into when creating a cookie (by using <code>SameSite=None</code>) to still be safe enough to offer robust default protections.</p>
+   <p><strong>Note</strong>: Developers will be able to relax cookie restrictions through the use of Storage Access API’s <code class="idl"><a data-link-type="idl" href="https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess" id="ref-for-dom-document-requeststorageaccess①">requestStorageAccess</a></code> or Storage Access API headers. <a data-link-type="biblio" href="#biblio-storage-access-headers" title="Storage Access Headers Proposal">[STORAGE-ACCESS-HEADERS]</a> However, these mechanisms are more tightly scoped and apply only at the level of individual documents or endpoints, reducing the risk of misconfiguring applications to make them broadly susceptible to cross-site attacks.</p>
+   <h2 class="heading settled" data-level="3" id="cross-site-interaction-scenarios"><span class="secno">3. </span><span class="content">Cross-Site Interaction Scenarios</span><a class="self-link" href="#cross-site-interaction-scenarios"></a></h2>
+   <p>As outlined in the previous section, in general we aim to not attach unpartitioned cookies to cross-site requests, except for top-level navigations using safe HTTP methods, such as <code>GET</code>.</p>
+   <p>However, there are a number of cases where the relationship between the source and destination of the request is less clear, where current browser behaviors diverge.
+We outline these cases below, along with the recommended behaviors that meet the security and privacy goals.</p>
+   <h3 class="heading settled" data-level="3.1" id="aba-embeds"><span class="secno">3.1. </span><span class="content">Same-Site Embeds with Cross-Site Ancestors (A>B>A embeds)</span><a class="self-link" href="#aba-embeds"></a></h3>
+   <p>Sites will have embeds that are same-site with the top-level site, but the embed has at least one cross-site ancestor in the frame tree.
+For brevity, we call these embeds A>B>A embeds.</p>
+   <p>When current third-party cookie blocking controls are enabled, major browsers' behaviors differ:</p>
+   <ul>
+    <li data-md>
+     <p>Chrome will always block cookies in the A>B>A embed.</p>
+    <li data-md>
+     <p>Firefox allows the A>B>A embed to read cookies set by A as the top-level site, but the A>B>A embed cannot write new cookies.</p>
+    <li data-md>
+     <p>Safari and Brave allow A>B>A embeds to read and write cookies, including with headers in subresource requests to A that originate from an embedded site B frame.</p>
+   </ul>
+   <h4 class="heading settled" data-level="3.1.1" id="aba-embeds-security"><span class="secno">3.1.1. </span><span class="content">Security Considerations</span><a class="self-link" href="#aba-embeds-security"></a></h4>
+   <p>Allowing embeds with cross-site ancestors to have access to cookies has the consequence of also permitting any embedded site to make credentialed requests to the top-level domain.
+This could allow malicious third-party sites to exploit cross-site information leaks. <a data-link-type="biblio" href="#biblio-xs-leaks" title="XS-Leaks Wiki">[XS-LEAKS]</a> The cookie specification <a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis#section-5.5.7.1">requires</a> that sites opt-in to cookies that need to be sent on cross-site requests with the <code>SameSite=None</code> attribute.
+One may contend that this already offers websites some protection by default.
+However, sites which enable <code>SameSite=None</code> cookies tend to have multiple endpoints, only some of which expect to be served in specific, trusted cross-site contexts.
+Endpoints which don’t expect cross-site interactions (and hence do not deploy sufficient protections against cross-site leaks or cross-site request forgery) might be unwittingly exposed to attacks from cross-site iframes.</p>
+   <h4 class="heading settled" data-level="3.1.2" id="aba-embeds-recommendation"><span class="secno">3.1.2. </span><span class="content">Recommendation</span><a class="self-link" href="#aba-embeds-recommendation"></a></h4>
+   <p>In order to defend against these types of attacks, we recommend that A>B>A embeds which wish to use <code>SameSite=None</code> cookies in a nested frame must call the Storage Access API first, which will grant access without prompting the user in this particular case.</p>
+   <h3 class="heading settled" data-level="3.2" id="navigating-x-site-frame"><span class="secno">3.2. </span><span class="content">Navigating a Cross-Site Embed to a Same-Site Frame</span><a class="self-link" href="#navigating-x-site-frame"></a></h3>
+   <p>Another <code>SameSite=None</code> cookie use case with diverging browser behavior is navigation requests for cross-site embedded frames to a same-site page.</p>
+   <p>Currently, all major browsers will send the <code>SameSite=None</code> cookie in these navigations.
+Should this be included in a spec as standard behavior?</p>
+   <h4 class="heading settled" data-level="3.2.1" id="navigating-x-site-frame-security"><span class="secno">3.2.1. </span><span class="content">Security Considerations</span><a class="self-link" href="#navigating-x-site-frame-security"></a></h4>
+   <p>The ability of a cross-site iframe to force the top-level window to embed an arbitrary same-site endpoint as an iframe does not introduce a major risk of cross-site leaks -- the attacker does not gain capabilities to learn information about the data loaded in the iframe.
+The primary risk in this context is CSRF due to the possibility of initiating a credentialed navigation (via either a <code>GET</code> or <code>POST</code> request) to arbitrary same-site destinations.
+This could be mitigated by allowing credentialed <code>GET</code> navigations, but restricting the sending of cookies on <code>POST</code> requests (most state-changing actions require non-safe methods such as <code>POST</code>).</p>
+   <p>Another potential attack in this scenario is clickjacking through iframing an unexpected same-site endpoint with state-changing functionality executed upon a user interaction with the embedded document.
+However, the A > A relationship between top-level site and iframe generally does not allow attackers sufficient control over the embed to execute compelling attacks, substantially reducing the risk of such attacks.</p>
+   <h4 class="heading settled" data-level="3.2.2" id="navigating-x-site-frame-recommendation"><span class="secno">3.2.2. </span><span class="content">Recommendation</span><a class="self-link" href="#navigating-x-site-frame-recommendation"></a></h4>
+   <p>Given the relatively low risk from this behavior and the lack of an alternative opt-in method, we should send <code>SameSite=None</code> cookies by default here.
+We could aim to not send cookies for <code>POST</code> requests in this scenario, however, that might have a reduced effect depending on the feasibility of blocking cookies in the top-level cross-site <code>POST</code> requests scenario outlined below.</p>
+   <h3 class="heading settled" data-level="3.3" id="top-level-post"><span class="secno">3.3. </span><span class="content">Top-Level Cross-Site <code>POST</code> Requests</span><a class="self-link" href="#top-level-post"></a></h3>
+   <p>Another <code>SameSite=None</code> cookie use case is when site A initiates a cross-site <code>POST</code> request to B which is also a top-level navigation.</p>
+   <p>In this case, the question is whether we want to have the browser send site B’s <code>SameSite=None</code> cookies in the <code>POST</code> request.
+All major browsers currently do.</p>
+   <p>There seems to be very widespread usage of this pattern on the web, such as for online credit card payments via 3-D Secure.</p>
+   <h4 class="heading settled" data-level="3.3.1" id="top-level-post-security"><span class="secno">3.3.1. </span><span class="content">Security Considerations</span><a class="self-link" href="#top-level-post-security"></a></h4>
+   <p>As outlined in the previous section, <code>POST</code> requests usually change server state and as such are especially vulnerable to CSRF attacks via top-level navigation. <code>SameSite</code> cookies exist as a protection mechanism for this attack.</p>
+   <h4 class="heading settled" data-level="3.3.2" id="top-level-post-recommendation"><span class="secno">3.3.2. </span><span class="content">Recommendation</span><a class="self-link" href="#top-level-post-recommendation"></a></h4>
+   <p>Given the existing widespread usage and lack of clear alternatives, we recommend following the current state of the web and not blocking cross-site cookies in this scenario.
+In the future, we would encourage use of some sort of preflight mechanism.</p>
+   <h2 class="heading settled" data-level="4" id="implementation-considerations"><span class="secno">4. </span><span class="content">Implementation Considerations</span><a class="self-link" href="#implementation-considerations"></a></h2>
+   <h3 class="heading settled" data-level="4.1" id="changing-third-party-cookie-blocking"><span class="secno">4.1. </span><span class="content">Changing Third-Party Cookie Blocking to Use "Site For Cookies"</span><a class="self-link" href="#changing-third-party-cookie-blocking"></a></h3>
+   <p><a data-link-type="biblio" href="#biblio-rfc6265bis-14" title="Cookies: HTTP State Management Mechanism">RFC 6265 bis</a> defines algorithms in section 5.2 to compute the "site for cookies" for a particular HTTP request.
+The result of this computation is used to determine which cookies are attached to requests based on their <code>SameSite</code> attribute.
+Cookies set with <code>SameSite=Lax/Strict</code> are sent in requests whose URL is same-site with the corresponding site for cookies, i.e. same-site requests. <code>SameSite=None</code> cookies are allowed in all contexts, including when the request URL is cross-site with the corresponding site for cookies, i.e. cross-site requests.</p>
+   <p>Our recommendation is to standardize third-party cookie blocking to use site for cookies to determine if a request is same-site or cross-site.
+Doing so will prevent third-party embeds from being able to send credentialed requests to the top-level site by default.</p>
+   <h3 class="heading settled" data-level="4.2" id="rsa-for-aba"><span class="secno">4.2. </span><span class="content">Request Storage Access for A>B>A Embeds</span><a class="self-link" href="#rsa-for-aba"></a></h3>
+   <p>We recommend for ABA embeds (see "Cross-site interaction scenarios" section) to allow the inner embed which is same-site with the top-level URL to regain access to cookies by calling the Storage Access API.
+Since the embed invoking the API is same-site with the top-level URL, the request can be auto-granted with no impact on user privacy.
+Requiring that the Storage Access API be invoked provides a strong security signal that the top-level URL consents to sending their own credentials from a request that spawned within a third-party embed.</p>
+   <h3 class="heading settled" data-level="4.3" id="heuristics-temporarily-allowing-third-party-cookies"><span class="secno">4.3. </span><span class="content">Heuristics Temporarily Allowing Third-Party Cookies</span><a class="self-link" href="#heuristics-temporarily-allowing-third-party-cookies"></a></h3>
+   <p>Some browsers, including Chrome, have implemented heuristics that temporarily grant access to third-party cookies based on confidence signals that the cookie is being used for critical user journeys on the site and not for tracking purposes. <a data-link-type="biblio" href="#biblio-heuristics" title="Temporary third-party cookie access using heuristics based exceptions.">[HEURISTICS]</a></p>
+   <p>While these heuristics will help websites stay functional during the period the web is transitioning away from third-party cookies, they have the potential to negate some of the security protections of removing third-party cookies.
+Developers should take care to ensure the flows that rely on these heuristics do not unwittingly expose their site’s state to attackers.</p>
+   <h3 class="heading settled" data-level="4.4" id="enterprise-policies"><span class="secno">4.4. </span><span class="content">Enterprise Policies</span><a class="self-link" href="#enterprise-policies"></a></h3>
+   <p>Browsers may support enterprise policies which disable third-party cookie blocking entirely.
+One example is the BlockThirdPartyCookies policy in Chromium. <a data-link-type="biblio" href="#biblio-blockthirdpartycookies" title="BlockThirdPartyCookies">[BLOCKTHIRDPARTYCOOKIES]</a> These policies will be necessary to keep critical business functionality for enterprises during the transition away from third-party cookies, especially in organizations which may not be able to push software updates to account for the change in a reasonable amount of time.
+However, these policies leave enterprise users vulnerable to CSRF or other attacks that result from cross-site boundary leaks.
+Browsers and web developers will have to consider the additional risk these users are subject to.</p>
+   <h2 class="heading settled" data-level="5" id="acks"><span class="secno">5. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acks"></a></h2>
+   <p>The following is an incomplete list of those works:</p>
+   <p><a data-link-type="biblio" href="#biblio-chips" title="CHIPS (Cookies Having Independent Partitioned State)">[CHIPS]</a>, <a data-link-type="biblio" href="#biblio-clickjacking" title="Clickjacking">[CLICKJACKING]</a>, <a data-link-type="biblio" href="#biblio-cors-for-developers" title="CORS for Developers">[CORS-FOR-DEVELOPERS]</a>, <a data-link-type="biblio" href="#biblio-csrf" title="Cross Site Request Forgery (CSRF)">[CSRF]</a>, <a data-link-type="biblio" href="#biblio-full-third-party-cookie-blocking" title="Full Third-Party Cookie Blocking and More">[FULL-THIRD-PARTY-COOKIE-BLOCKING]</a>, <a data-link-type="biblio" href="#biblio-hardware-level-vulnerabilities" title="Transient execution CPU vulnerability">[HARDWARE-LEVEL-VULNERABILITIES]</a>, <a data-link-type="biblio" href="#biblio-login-csrf" title="Cross-Site Request Forgery Prevention Cheat Sheet">[LOGIN-CSRF]</a>, <a data-link-type="biblio" href="#biblio-logout-csrf" title="How does a CSRF logout pose a potential threat to a website?">[LOGOUT-CSRF]</a>, <a data-link-type="biblio" href="#biblio-post-spectre-web-development" title="Post-Spectre Web Development">[POST-SPECTRE-WEB-DEVELOPMENT]</a>, <a data-link-type="biblio" href="#biblio-safe-http-methods" title="Safe (HTTP Methods)">[SAFE-HTTP-METHODS]</a>, <a data-link-type="biblio" href="#biblio-storage-access-api" title="The Storage Access API">[STORAGE-ACCESS-API]</a>, <a data-link-type="biblio" href="#biblio-storage-access-headers" title="Storage Access Headers Proposal">[STORAGE-ACCESS-HEADERS]</a>, <a data-link-type="biblio" href="#biblio-targeted-deanonymization" title="Targeted Deanonymization via the Cache Side Channel: Attacks and Defenses">[TARGETED-DEANONYMIZATION]</a>, <a data-link-type="biblio" href="#biblio-xs-leaks" title="XS-Leaks Wiki">[XS-LEAKS]</a>, <a data-link-type="biblio" href="#biblio-xshm" title="Cross Site History Manipulation (XSHM)">[XSHM]</a>, <a data-link-type="biblio" href="#biblio-xss" title="Cross Site Scripting (XSS)">[XSS]</a></p>
+  </main>
+  <div data-fill-with="conformance">
+   <h2 class="no-ref no-num heading settled" id="w3c-conformance"><span class="content">Conformance</span><a class="self-link" href="#w3c-conformance"></a></h2>
+   <h3 class="no-ref no-num heading settled" id="w3c-conventions"><span class="content">Document conventions</span><a class="self-link" href="#w3c-conventions"></a></h3>
+   <p>Conformance requirements are expressed
+    with a combination of descriptive assertions
+    and RFC 2119 terminology.
+    The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”, “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL”
+    in the normative parts of this document
+    are to be interpreted as described in RFC 2119.
+    However, for readability,
+    these words do not appear in all uppercase letters in this specification. </p>
+   <p>All of the text of this specification is normative
+    except sections explicitly marked as non-normative, examples, and notes. <a data-link-type="biblio" href="#biblio-rfc2119" title="Key words for use in RFCs to Indicate Requirement Levels">[RFC2119]</a> </p>
+   <p>Examples in this specification are introduced with the words “for example”
+    or are set apart from the normative text
+    with <code>class="example"</code>,
+    like this: </p>
+   <div class="example" id="w3c-example">
+    <a class="self-link" href="#w3c-example"></a> 
+    <p>This is an example of an informative example. </p>
+   </div>
+   <p>Informative notes begin with the word “Note”
+    and are set apart from the normative text
+    with <code>class="note"</code>,
+    like this: </p>
+   <p class="note" role="note">Note, this is an informative note.</p>
+  </div>
+  <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
+  <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
+  <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
+  <ul class="index">
+   <li>
+    <a data-link-type="biblio">[STORAGE-ACCESS]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="aa7820f7">requestStorageAccess()</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[URL]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="f06432d7">URL</span>
+     <li><span class="dfn-paneled" id="959ad97b">origin</span>
+    </ul>
+  </ul>
+  <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
+  <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
+  <dl>
+   <dt id="biblio-rfc2119">[RFC2119]
+   <dd>S. Bradner. <a href="https://datatracker.ietf.org/doc/html/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. March 1997. Best Current Practice. URL: <a href="https://datatracker.ietf.org/doc/html/rfc2119">https://datatracker.ietf.org/doc/html/rfc2119</a>
+   <dt id="biblio-rfc6265bis-14">[RFC6265BIS-14]
+   <dd><a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis"><cite>Cookies: HTTP State Management Mechanism</cite></a>. Editor's Draft. URL: <a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis">https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis</a>
+   <dt id="biblio-storage-access">[STORAGE-ACCESS]
+   <dd><a href="https://privacycg.github.io/storage-access/"><cite>The Storage Access API</cite></a>. Editor's Draft. URL: <a href="https://privacycg.github.io/storage-access/">https://privacycg.github.io/storage-access/</a>
+   <dt id="biblio-url">[URL]
+   <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
+  </dl>
+  <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
+  <dl>
+   <dt id="biblio-blockthirdpartycookies">[BLOCKTHIRDPARTYCOOKIES]
+   <dd>Google. <a href="https://chromeenterprise.google/policies/#BlockThirdPartyCookies"><cite>BlockThirdPartyCookies</cite></a>. URL: <a href="https://chromeenterprise.google/policies/#BlockThirdPartyCookies">https://chromeenterprise.google/policies/#BlockThirdPartyCookies</a>
+   <dt id="biblio-chips">[CHIPS]
+   <dd>Dylan Cutler; Kaustubha Govind. <a href="https://github.com/privacycg/CHIPS"><cite>CHIPS (Cookies Having Independent Partitioned State)</cite></a>. URL: <a href="https://github.com/privacycg/CHIPS">https://github.com/privacycg/CHIPS</a>
+   <dt id="biblio-clickjacking">[CLICKJACKING]
+   <dd>Gustav Rydstedt. <a href="https://owasp.org/www-community/attacks/Clickjacking"><cite>Clickjacking</cite></a>. URL: <a href="https://owasp.org/www-community/attacks/Clickjacking">https://owasp.org/www-community/attacks/Clickjacking</a>
+   <dt id="biblio-cookie-samesite-bug">[COOKIE-SAMESITE-BUG]
+   <dd>Lily Chen. <a href="https://issues.chromium.org/issues/40184286"><cite>Cookie SameSite: redirect checking causes site breakag</cite></a>. URL: <a href="https://issues.chromium.org/issues/40184286">https://issues.chromium.org/issues/40184286</a>
+   <dt id="biblio-cors-for-developers">[CORS-FOR-DEVELOPERS]
+   <dd>Brad Hill. <a href="https://w3c.github.io/webappsec-cors-for-developers"><cite>CORS for Developers</cite></a>. URL: <a href="https://w3c.github.io/webappsec-cors-for-developers">https://w3c.github.io/webappsec-cors-for-developers</a>
+   <dt id="biblio-csrf">[CSRF]
+   <dd>KirstenS. <a href="https://owasp.org/www-community/attacks/csrf"><cite>Cross Site Request Forgery (CSRF)</cite></a>. URL: <a href="https://owasp.org/www-community/attacks/csrf">https://owasp.org/www-community/attacks/csrf</a>
+   <dt id="biblio-full-third-party-cookie-blocking">[FULL-THIRD-PARTY-COOKIE-BLOCKING]
+   <dd>John Wilander. <a href="https://webkit.org/blog/10218/full-third-party-cookie-blocking-and-more/"><cite>Full Third-Party Cookie Blocking and More</cite></a>. URL: <a href="https://webkit.org/blog/10218/full-third-party-cookie-blocking-and-more/">https://webkit.org/blog/10218/full-third-party-cookie-blocking-and-more/</a>
+   <dt id="biblio-hardware-level-vulnerabilities">[HARDWARE-LEVEL-VULNERABILITIES]
+   <dd>Wikipedia. <a href="https://en.wikipedia.org/wiki/Transient_execution_CPU_vulnerability"><cite>Transient execution CPU vulnerability</cite></a>. URL: <a href="https://en.wikipedia.org/wiki/Transient_execution_CPU_vulnerability">https://en.wikipedia.org/wiki/Transient_execution_CPU_vulnerability</a>
+   <dt id="biblio-heuristics">[HEURISTICS]
+   <dd>Google. <a href="https://developers.google.com/privacy-sandbox/3pcd/temporary-exceptions/heuristics-based-exceptions"><cite>Temporary third-party cookie access using heuristics based exceptions.</cite></a>. URL: <a href="https://developers.google.com/privacy-sandbox/3pcd/temporary-exceptions/heuristics-based-exceptions">https://developers.google.com/privacy-sandbox/3pcd/temporary-exceptions/heuristics-based-exceptions</a>
+   <dt id="biblio-login-csrf">[LOGIN-CSRF]
+   <dd>OWASP. <a href="https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html"><cite>Cross-Site Request Forgery Prevention Cheat Sheet</cite></a>. URL: <a href="https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html</a>
+   <dt id="biblio-logout-csrf">[LOGOUT-CSRF]
+   <dd>Steve Sether. <a href="https://security.stackexchange.com/questions/101899/how-does-a-csrf-logout-pose-a-potential-threat-to-a-website"><cite>How does a CSRF logout pose a potential threat to a website?</cite></a>. URL: <a href="https://security.stackexchange.com/questions/101899/how-does-a-csrf-logout-pose-a-potential-threat-to-a-website">https://security.stackexchange.com/questions/101899/how-does-a-csrf-logout-pose-a-potential-threat-to-a-website</a>
+   <dt id="biblio-post-spectre-web-development">[POST-SPECTRE-WEB-DEVELOPMENT]
+   <dd>Mike West. <a href="https://www.w3.org/TR/post-spectre-webdev/#threat-model"><cite>Post-Spectre Web Development</cite></a>. URL: <a href="https://www.w3.org/TR/post-spectre-webdev/#threat-model">https://www.w3.org/TR/post-spectre-webdev/#threat-model</a>
+   <dt id="biblio-safe-http-methods">[SAFE-HTTP-METHODS]
+   <dd>MDN. <a href="https://developer.mozilla.org/en-US/docs/Glossary/Safe/HTTP"><cite>Safe (HTTP Methods)</cite></a>. URL: <a href="https://developer.mozilla.org/en-US/docs/Glossary/Safe/HTTP">https://developer.mozilla.org/en-US/docs/Glossary/Safe/HTTP</a>
+   <dt id="biblio-samesite-cookies-explained">[SAMESITE-COOKIES-EXPLAINED]
+   <dd>Rowan Merewood. <a href="https://web.dev/articles/samesite-cookies-explained"><cite>SameSite cookies explained</cite></a>. URL: <a href="https://web.dev/articles/samesite-cookies-explained">https://web.dev/articles/samesite-cookies-explained</a>
+   <dt id="biblio-storage-access-api">[STORAGE-ACCESS-API]
+   <dd>Benjamin Vandersloot; Johann Hofmann; Anne van Kesteren. <a href="https://github.com/privacycg/storage-access/"><cite>The Storage Access API</cite></a>. URL: <a href="https://github.com/privacycg/storage-access/">https://github.com/privacycg/storage-access/</a>
+   <dt id="biblio-storage-access-headers">[STORAGE-ACCESS-HEADERS]
+   <dd>Chris Fredrickson. <a href="https://github.com/cfredric/storage-access-headers"><cite>Storage Access Headers Proposal</cite></a>. URL: <a href="https://github.com/cfredric/storage-access-headers">https://github.com/cfredric/storage-access-headers</a>
+   <dt id="biblio-targeted-deanonymization">[TARGETED-DEANONYMIZATION]
+   <dd>Mojtaba Zaheri; Yossi Oren; Reza Curtmola. <a href="https://www.usenix.org/conference/usenixsecurity22/presentation/zaheri"><cite>Targeted Deanonymization via the Cache Side Channel: Attacks and Defenses</cite></a>. URL: <a href="https://www.usenix.org/conference/usenixsecurity22/presentation/zaheri">https://www.usenix.org/conference/usenixsecurity22/presentation/zaheri</a>
+   <dt id="biblio-using-http-cookies">[USING-HTTP-COOKIES]
+   <dd>MDN. <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies"><cite>Using HTTP Cookies</cite></a>. URL: <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies">https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies</a>
+   <dt id="biblio-w3c-privacy">[W3C-PRIVACY]
+   <dd>W3C. <a href="https://www.w3.org/mission/privacy/"><cite>Privacy | Our mission | W3C</cite></a>. URL: <a href="https://www.w3.org/mission/privacy/">https://www.w3.org/mission/privacy/</a>
+   <dt id="biblio-xs-leaks">[XS-LEAKS]
+   <dd>Manuel Sousa; et al. <a href="https://xsleaks.dev"><cite>XS-Leaks Wiki</cite></a>. URL: <a href="https://xsleaks.dev">https://xsleaks.dev</a>
+   <dt id="biblio-xshm">[XSHM]
+   <dd>Adar Weidman. <a href="https://owasp.org/www-community/attacks/Cross_Site_History_Manipulation_(XSHM)"><cite>Cross Site History Manipulation (XSHM)</cite></a>. URL: <a href="https://owasp.org/www-community/attacks/Cross_Site_History_Manipulation_(XSHM)">https://owasp.org/www-community/attacks/Cross_Site_History_Manipulation_(XSHM)</a>
+   <dt id="biblio-xss">[XSS]
+   <dd>KirstenS. <a href="https://owasp.org/www-community/attacks/xss/"><cite>Cross Site Scripting (XSS)</cite></a>. URL: <a href="https://owasp.org/www-community/attacks/xss/">https://owasp.org/www-community/attacks/xss/</a>
+  </dl>
+<script>/* Boilerplate: script-dom-helper */
+"use strict";
+function query(sel) { return document.querySelector(sel); }
+
+function queryAll(sel) { return [...document.querySelectorAll(sel)]; }
+
+function iter(obj) {
+	if(!obj) return [];
+	var it = obj[Symbol.iterator];
+	if(it) return it;
+	return Object.entries(obj);
+}
+
+function mk(tagname, attrs, ...children) {
+	const el = document.createElement(tagname);
+	for(const [k,v] of iter(attrs)) {
+		if(k.slice(0,3) == "_on") {
+			const eventName = k.slice(3);
+			el.addEventListener(eventName, v);
+		} else if(k[0] == "_") {
+			// property, not attribute
+			el[k.slice(1)] = v;
+		} else {
+			if(v === false || v == null) {
+        continue;
+      } else if(v === true) {
+        el.setAttribute(k, "");
+        continue;
+      } else {
+  			el.setAttribute(k, v);
+      }
+		}
+	}
+	append(el, children);
+	return el;
+}
+
+/* Create shortcuts for every known HTML element */
+[
+  "a",
+  "abbr",
+  "acronym",
+  "address",
+  "applet",
+  "area",
+  "article",
+  "aside",
+  "audio",
+  "b",
+  "base",
+  "basefont",
+  "bdo",
+  "big",
+  "blockquote",
+  "body",
+  "br",
+  "button",
+  "canvas",
+  "caption",
+  "center",
+  "cite",
+  "code",
+  "col",
+  "colgroup",
+  "datalist",
+  "dd",
+  "del",
+  "details",
+  "dfn",
+  "dialog",
+  "div",
+  "dl",
+  "dt",
+  "em",
+  "embed",
+  "fieldset",
+  "figcaption",
+  "figure",
+  "font",
+  "footer",
+  "form",
+  "frame",
+  "frameset",
+  "head",
+  "header",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "hr",
+  "html",
+  "i",
+  "iframe",
+  "img",
+  "input",
+  "ins",
+  "kbd",
+  "label",
+  "legend",
+  "li",
+  "link",
+  "main",
+  "map",
+  "mark",
+  "meta",
+  "meter",
+  "nav",
+  "nobr",
+  "noscript",
+  "object",
+  "ol",
+  "optgroup",
+  "option",
+  "output",
+  "p",
+  "param",
+  "pre",
+  "progress",
+  "q",
+  "s",
+  "samp",
+  "script",
+  "section",
+  "select",
+  "small",
+  "source",
+  "span",
+  "strike",
+  "strong",
+  "style",
+  "sub",
+  "summary",
+  "sup",
+  "table",
+  "tbody",
+  "td",
+  "template",
+  "textarea",
+  "tfoot",
+  "th",
+  "thead",
+  "time",
+  "title",
+  "tr",
+  "u",
+  "ul",
+  "var",
+  "video",
+  "wbr",
+  "xmp",
+].forEach(tagname=>{
+	mk[tagname] = (...args) => mk(tagname, ...args);
+});
+
+function* nodesFromChildList(children) {
+	for(const child of children.flat(Infinity)) {
+		if(child instanceof Node) {
+			yield child;
+		} else {
+			yield new Text(child);
+		}
+	}
+}
+function append(el, ...children) {
+	for(const child of nodesFromChildList(children)) {
+		if(el instanceof Node) el.appendChild(child);
+		else el.push(child);
+	}
+	return el;
+}
+
+function insertAfter(el, ...children) {
+	for(const child of nodesFromChildList(children)) {
+		el.parentNode.insertBefore(child, el.nextSibling);
+	}
+	return el;
+}
+
+function clearContents(el) {
+	el.innerHTML = "";
+	return el;
+}
+
+function parseHTML(markup) {
+	if(markup.toLowerCase().trim().indexOf('<!doctype') === 0) {
+		const doc = document.implementation.createHTMLDocument("");
+		doc.documentElement.innerHTML = markup;
+		return doc;
+	} else {
+		const el = mk.template({});
+		el.innerHTML = markup;
+		return el.content;
+	}
+}</script>
+<script>/* Boilerplate: script-dfn-panel */
+"use strict";
+{
+let dfnPanelData = {
+"959ad97b": {"dfnID":"959ad97b","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-url-origin"}],"title":"1.2. Security Concerns With Attaching Cookies On Cross-Site Requests"}],"url":"https://url.spec.whatwg.org/#concept-url-origin"},
+"aa7820f7": {"dfnID":"aa7820f7","dfnText":"requestStorageAccess()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-document-requeststorageaccess"},{"id":"ref-for-dom-document-requeststorageaccess\u2460"}],"title":"2.8. End State Security Properties"}],"url":"https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess"},
+"f06432d7": {"dfnID":"f06432d7","dfnText":"URL","external":true,"refSections":[{"refs":[{"id":"ref-for-url"}],"title":"1.2. Security Concerns With Attaching Cookies On Cross-Site Requests"}],"url":"https://url.spec.whatwg.org/#url"},
+};
+
+document.addEventListener("DOMContentLoaded", ()=>{
+    genAllDfnPanels();
+
+    document.body.addEventListener("click", (e) => {
+        // If not handled already, just hide all dfn panels.
+        hideAllDfnPanels();
+    });
+});
+
+window.addEventListener("resize", () => {
+    // Pin any visible dfn panel
+    queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>positionDfnPanel(el));
+});
+
+function genAllDfnPanels() {
+    for(const panelData of Object.values(dfnPanelData)) {
+        const dfnID = panelData.dfnID;
+        const dfn = document.getElementById(dfnID);
+        if(!dfn) {
+            console.log(`Can't find dfn#${dfnID}.`, panelData);
+            continue;
+        }
+        dfn.panelData = panelData;
+        insertDfnPopupAction(dfn);
+    }
+}
+
+function genDfnPanel(dfn, { dfnID, url, dfnText, refSections, external }) {
+    const dfnPanel = mk.aside({
+        class: "dfn-panel on",
+        id: `infopanel-for-${dfnID}`,
+        "data-for": dfnID,
+        "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
+        },
+        mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
+            `Info about the '${dfnText}' ${external?"external":""} reference.`),
+        mk.a({href:url, class:"dfn-link"}, url),
+        refSections.length == 0 ? [] :
+            mk.b({}, "Referenced in:"),
+            mk.ul({},
+                ...refSections.map(section=>
+                    mk.li({},
+                        ...section.refs.map((ref, refI)=>
+                            [
+                                mk.a({ href: `#${ref.id}` },
+                                    (refI == 0) ? section.title : `(${refI + 1})`
+                                ),
+                                " ",
+                            ]
+                        ),
+                    ),
+                ),
+            ),
+        genLinkingSyntaxes(dfn),
+    );
+
+    dfnPanel.addEventListener('click', (event) => {
+        if (event.target.nodeName == 'A') {
+            scrollToTargetAndHighlight(event);
+            pinDfnPanel(dfnPanel);
+        }
+        event.stopPropagation();
+        refocusOnTarget(event);
+    });
+    dfnPanel.addEventListener('keydown', (event) => {
+        if(event.keyCode == 27) { // Escape key
+            hideDfnPanel({dfnPanel});
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    });
+
+    dfnPanel.dfn = dfn;
+    dfn.dfnPanel = dfnPanel;
+    return dfnPanel;
+}
+
+
+
+function hideAllDfnPanels() {
+    // Delete the currently-active dfn panel.
+    queryAll(".dfn-panel").forEach(dfnPanel=>hideDfnPanel({dfnPanel}));
+}
+
+function showDfnPanel(dfn) {
+    hideAllDfnPanels(); // Only display one at a time.
+
+    dfn.setAttribute("aria-expanded", "true");
+
+    const dfnPanel = genDfnPanel(dfn, dfn.panelData);
+
+    // Give the dfn a unique tabindex, and then
+    // give all the tabbable panel bits successive indexes.
+    let tabIndex = 100;
+    dfn.tabIndex = tabIndex++;
+    const tabbable = dfnPanel.querySelectorAll(":is(a, button)");
+    for (const el of tabbable) {
+        el.tabIndex = tabIndex++;
+    }
+
+    append(document.body, dfnPanel);
+    positionDfnPanel(dfnPanel);
+}
+
+function positionDfnPanel(dfnPanel) {
+    const dfn = dfnPanel.dfn;
+    const dfnPos = getBounds(dfn);
+    dfnPanel.style.top = dfnPos.bottom + "px";
+    dfnPanel.style.left = dfnPos.left + "px";
+
+    const panelPos = dfnPanel.getBoundingClientRect();
+    const panelMargin = 8;
+    const maxRight = document.body.parentNode.clientWidth - panelMargin;
+    if (panelPos.right > maxRight) {
+        const overflowAmount = panelPos.right - maxRight;
+        const newLeft = Math.max(panelMargin, dfnPos.left - overflowAmount);
+        dfnPanel.style.left = newLeft + "px";
+    }
+}
+
+function pinDfnPanel(dfnPanel) {
+    // Switch it to "activated" state, which pins it.
+    dfnPanel.classList.add("activated");
+    dfnPanel.style.position = "fixed";
+    dfnPanel.style.left = null;
+    dfnPanel.style.top = null;
+}
+
+function hideDfnPanel({dfn, dfnPanel}) {
+    if(!dfnPanel) dfnPanel = dfn.dfnPanel;
+    if(!dfn) dfn = dfnPanel.dfn;
+    dfn.dfnPanel = undefined;
+    dfnPanel.dfn = undefined;
+    dfn.setAttribute("aria-expanded", "false");
+    dfn.tabIndex = undefined;
+    dfnPanel.remove()
+}
+
+function toggleDfnPanel(dfn) {
+    if(dfn.dfnPanel) {
+        hideDfnPanel(dfn);
+    } else {
+        showDfnPanel(dfn);
+    }
+}
+
+function insertDfnPopupAction(dfn) {
+    dfn.setAttribute('role', 'button');
+    dfn.setAttribute('aria-expanded', 'false')
+    dfn.tabIndex = 0;
+    dfn.classList.add('has-dfn-panel');
+    dfn.addEventListener('click', (event) => {
+        toggleDfnPanel(dfn);
+        event.stopPropagation();
+    });
+    dfn.addEventListener('keypress', (event) => {
+        const kc = event.keyCode;
+        // 32->Space, 13->Enter
+        if(kc == 32 || kc == 13) {
+            toggleDfnPanel(dfn);
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    });
+}
+
+function refocusOnTarget(event) {
+    const target = event.target;
+    setTimeout(() => {
+        // Refocus on the event.target element.
+        // This is needed after browser scrolls to the destination.
+        target.focus();
+    });
+}
+
+// TODO: shared util
+// Returns the root-level absolute position {left and top} of element.
+function getBounds(el, relativeTo=document.body) {
+    const relativeRect = relativeTo.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    const top = elRect.top - relativeRect.top;
+    const left = elRect.left - relativeRect.left;
+    return {
+        top,
+        left,
+        bottom: top + elRect.height,
+        right: left + elRect.width,
+    }
+}
+
+function scrollToTargetAndHighlight(event) {
+    let hash = event.target.hash;
+    if (hash) {
+        hash = decodeURIComponent(hash.substring(1));
+        const dest = document.getElementById(hash);
+        if (dest) {
+            dest.classList.add('highlighted');
+            setTimeout(() => dest.classList.remove('highlighted'), 1000);
+        }
+    }
+}
+
+// Functions, divided by link type, that wrap an autolink's
+// contents with the appropriate outer syntax.
+// Alternately, a string naming another type they format
+// the same as.
+function needsFor(type) {
+    switch(type) {
+        case "descriptor":
+        case "value":
+        case "element-attr":
+        case "attr-value":
+        case "element-state":
+        case "method":
+        case "constructor":
+        case "argument":
+        case "attribute":
+        case "const":
+        case "dict-member":
+        case "event":
+        case "enum-value":
+        case "stringifier":
+        case "serializer":
+        case "iterator":
+        case "maplike":
+        case "setlike":
+        case "state":
+        case "mode":
+        case "context":
+        case "facet": return true;
+
+        default: return false;
+    }
+}
+function refusesFor(type) {
+    switch(type) {
+        case "property":
+        case "element":
+        case "interface":
+        case "namespace":
+        case "callback":
+        case "dictionary":
+        case "enum":
+        case "exception":
+        case "typedef":
+        case "http-header":
+        case "permission": return true;
+
+        default: return false;
+    }
+}
+function linkFormatterFromType(type) {
+    switch(type) {
+        case 'scheme':
+        case 'permission':
+        case 'dfn': return (text) => `[=${text}=]`;
+
+        case 'abstract-op': return (text) => `[\$${text}\$]`;
+
+        case 'function':
+        case 'at-rule':
+        case 'selector':
+        case 'value': return (text) => `''${text}''`;
+
+        case 'http-header': return (text) => `[:${text}:]`;
+
+        case 'interface':
+        case 'constructor':
+        case 'method':
+        case 'argument':
+        case 'attribute':
+        case 'callback':
+        case 'dictionary':
+        case 'dict-member':
+        case 'enum':
+        case 'enum-value':
+        case 'exception':
+        case 'const':
+        case 'typedef':
+        case 'stringifier':
+        case 'serializer':
+        case 'iterator':
+        case 'maplike':
+        case 'setlike':
+        case 'extended-attribute':
+        case 'event':
+        case 'idl': return (text) => `{{${text}}}`;
+
+        case 'element-state':
+        case 'element-attr':
+        case 'attr-value':
+        case 'element': return (element) => `<{${element}}>`;
+
+        case 'grammar': return (text) => `${text} (within a <pre class=prod>)`;
+
+        case 'type': return (text)=> `<<${text}>>`;
+
+        case 'descriptor':
+        case 'property': return (text) => `'${text}'`;
+
+        default: return;
+    };
+};
+
+function genLinkingSyntaxes(dfn) {
+    if(dfn.tagName != "DFN") return;
+
+    const type = dfn.getAttribute('data-dfn-type');
+    if(!type) {
+        console.log(`<dfn> doesn't have a data-dfn-type:`, dfn);
+        return [];
+    }
+
+    // Return a function that wraps link text based on the type
+    const linkFormatter = linkFormatterFromType(type);
+    if(!linkFormatter) {
+        console.log(`<dfn> has an unknown data-dfn-type:`, dfn);
+        return [];
+    }
+
+    let ltAlts;
+    if(dfn.hasAttribute('data-lt')) {
+        ltAlts = dfn.getAttribute('data-lt')
+            .split("|")
+            .map(x=>x.trim());
+    } else {
+        ltAlts = [dfn.textContent.trim()];
+    }
+    if(type == "type") {
+        // lt of "<foo>", but "foo" is the interior;
+        // <<foo/bar>> is how you write it with a for,
+        // not <foo/<bar>> or whatever.
+        for(var i = 0; i < ltAlts.length; i++) {
+            const lt = ltAlts[i];
+            const match = /<(.*)>/.exec(lt);
+            if(match) { ltAlts[i] = match[1]; }
+        }
+    }
+
+    let forAlts;
+    if(dfn.hasAttribute('data-dfn-for')) {
+        forAlts = dfn.getAttribute('data-dfn-for')
+            .split(",")
+            .map(x=>x.trim());
+    } else {
+        forAlts = [''];
+    }
+
+    let linkingSyntaxes = [];
+    if(!needsFor(type)) {
+        for(const lt of ltAlts) {
+            linkingSyntaxes.push(linkFormatter(lt));
+        }
+    }
+    if(!refusesFor(type)) {
+        for(const f of forAlts) {
+            linkingSyntaxes.push(linkFormatter(`${f}/${ltAlts[0]}`))
+        }
+    }
+    return [
+        mk.b({}, 'Possible linking syntaxes:'),
+        mk.ul({},
+            ...linkingSyntaxes.map(link => {
+                const copyLink = async () =>
+                    await navigator.clipboard.writeText(link);
+                return mk.li({},
+                    mk.div({ class: 'link-item' },
+                        mk.button({
+                            class: 'copy-icon', title: 'Copy',
+                            type: 'button',
+                            _onclick: copyLink,
+                            tabindex: 0,
+                        }, mk.span({ class: 'icon' }) ),
+                        mk.span({}, link)
+                    )
+                );
+            })
+        )
+    ];
+}
+}
+</script>
+<script>/* Boilerplate: script-ref-hints */
+"use strict";
+{
+let refsData = {
+"https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess": {"export":true,"for_":["Document"],"level":"1","normative":true,"shortname":"storage-access","spec":"storage-access","status":"current","text":"requestStorageAccess()","type":"method","url":"https://privacycg.github.io/storage-access/#dom-document-requeststorageaccess"},
+"https://url.spec.whatwg.org/#concept-url-origin": {"export":true,"for_":["url"],"level":"1","normative":true,"shortname":"url","spec":"url","status":"current","text":"origin","type":"dfn","url":"https://url.spec.whatwg.org/#concept-url-origin"},
+"https://url.spec.whatwg.org/#url": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"url","spec":"url","status":"current","text":"URL","type":"interface","url":"https://url.spec.whatwg.org/#url"},
+};
+
+function mkRefHint(link, ref) {
+    const linkText = link.textContent;
+    let dfnTextElements = '';
+    if (ref.text != linkText) {
+        dfnTextElements =
+            mk.li({},
+                mk.b({}, "Term: "),
+                mk.span({}, ref.text)
+            );
+    }
+    const forList = ref.for_;
+    let forListElements;
+    if(forList.length == 0) {
+        forListElements = [];
+    } else if(forList.length == 1) {
+        forListElements = mk.li({},
+            mk.b({}, "For: "),
+            mk.span({}, forList[0]),
+        );
+    } else {
+        forListElements = mk.li({},
+            mk.b({}, "For: "),
+            mk.ul({},
+                ...forList.map(forItem =>
+                    mk.li({},
+                        mk.span({}, forItem)
+                    ),
+                ),
+            ),
+        );
+    }
+    const url = ref.url;
+    const safeUrl = encodeURIComponent(url);
+    const hintPanel = mk.aside({
+        class: "ref-hint",
+        id: `ref-hint-for-${safeUrl}`,
+        "data-for": url,
+        "aria-labelled-by": `ref-hint-for-${safeUrl}`,
+    },
+        mk.ul({},
+            dfnTextElements,
+            mk.li({},
+                mk.b({}, "URL: "),
+                mk.a({ href: url, class: "ref" }, url),
+            ),
+            mk.li({},
+                mk.b({}, "Type: "),
+                mk.span({}, `${ref.type}`),
+            ),
+            mk.li({},
+                mk.b({}, "Spec: "),
+                mk.span({}, `${ref.spec ? ref.spec : ''}`),
+            ),
+            forListElements
+        ),
+    );
+    hintPanel.forLink = link;
+    setupRefHintEventListeners(link, hintPanel);
+    return hintPanel;
+}
+
+function hideAllRefHints() {
+    queryAll(".ref-hint").forEach(el=>hideRefHint(el));
+}
+
+function hideRefHint(refHint) {
+    const link = refHint.forLink;
+    link.setAttribute("aria-expanded", "false");
+    if(refHint.teardownEventListeners) {
+        refHint.teardownEventListeners();
+    }
+    refHint.remove();
+}
+
+function showRefHint(link) {
+    if(link.classList.contains("dfn-link")) return;
+    const url = link.getAttribute("href");
+    const ref = refsData[url];
+    if(!ref) return;
+
+    hideAllRefHints(); // Only display one at this time.
+
+    const refHint = mkRefHint(link, ref);
+    append(document.body, refHint);
+    link.setAttribute("aria-expanded", "true");
+    positionRefHint(refHint);
+}
+
+function setupRefHintEventListeners(link, refHint) {
+    if (refHint.teardownEventListeners) return;
+    // Add event handlers to hide the refHint after the user moves away
+    // from both the link and refHint, if not hovering either within one second.
+    let timeout = null;
+    const startHidingRefHint = (event) => {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => {
+            hideRefHint(refHint);
+        }, 1000);
+    }
+    const resetHidingRefHint = (event) => {
+        if (timeout) clearTimeout(timeout);
+        timeout = null;
+    };
+    link.addEventListener("mouseleave", startHidingRefHint);
+    link.addEventListener("mouseenter", resetHidingRefHint);
+    link.addEventListener("blur", startHidingRefHint);
+    link.addEventListener("focus", resetHidingRefHint);
+    refHint.addEventListener("mouseleave", startHidingRefHint);
+    refHint.addEventListener("mouseenter", resetHidingRefHint);
+    refHint.addEventListener("blur", startHidingRefHint);
+    refHint.addEventListener("focus", resetHidingRefHint);
+
+    refHint.teardownEventListeners = () => {
+        // remove event listeners
+        resetHidingRefHint();
+        link.removeEventListener("mouseleave", startHidingRefHint);
+        link.removeEventListener("mouseenter", resetHidingRefHint);
+        link.removeEventListener("blur", startHidingRefHint);
+        link.removeEventListener("focus", resetHidingRefHint);
+        refHint.removeEventListener("mouseleave", startHidingRefHint);
+        refHint.removeEventListener("mouseenter", resetHidingRefHint);
+        refHint.removeEventListener("blur", startHidingRefHint);
+        refHint.removeEventListener("focus", resetHidingRefHint);
+    };
+}
+
+function positionRefHint(refHint) {
+    const link = refHint.forLink;
+    const linkPos = getBounds(link);
+    refHint.style.top = linkPos.bottom + "px";
+    refHint.style.left = linkPos.left + "px";
+
+    const panelPos = refHint.getBoundingClientRect();
+    const panelMargin = 8;
+    const maxRight = document.body.parentNode.clientWidth - panelMargin;
+    if (panelPos.right > maxRight) {
+        const overflowAmount = panelPos.right - maxRight;
+        const newLeft = Math.max(panelMargin, linkPos.left - overflowAmount);
+        refHint.style.left = newLeft + "px";
+    }
+}
+
+// TODO: shared util
+// Returns the root-level absolute position {left and top} of element.
+function getBounds(el, relativeTo=document.body) {
+    const relativeRect = relativeTo.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    const top = elRect.top - relativeRect.top;
+    const left = elRect.left - relativeRect.left;
+    return {
+        top,
+        left,
+        bottom: top + elRect.height,
+        right: left + elRect.width,
+    }
+}
+
+function showRefHintListener(e) {
+    // If the target isn't in a link (or is a link),
+    // just ignore it.
+    let link = e.target.closest("a");
+    if(!link) return;
+
+    // If the target is in a ref-hint panel
+    // (aka a link in the already-open one),
+    // also just ignore it.
+    if(link.closest(".ref-hint")) return;
+
+    // Otherwise, show the panel for the link.
+    showRefHint(link);
+}
+
+function hideAllHintsListener(e) {
+    // If the click is inside a ref-hint panel, ignore it.
+    if(e.target.closest(".ref-hint")) return;
+    // Otherwise, close all the current panels.
+    hideAllRefHints();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.addEventListener("mousedown", showRefHintListener);
+    document.body.addEventListener("focus", showRefHintListener);
+
+    document.body.addEventListener("click", hideAllHintsListener);
+});
+
+window.addEventListener("resize", () => {
+    // Hide any open ref hint.
+    hideAllRefHints();
+});
+}
+</script>
