@@ -2,10 +2,10 @@
 Title: Standardizing Security Semantics of Cross-Site Cookies
 Shortname: standardizing-security-semantics-of-cross-site-cookies
 Level: none
-Status: w3c/UD
+Status: ED
 Group: WebAppSec
-Repository: org/repo-name
-URL: http://example.com/url-this-spec-will-live-at
+Repository: w3c/webappsec-standardizing-security-semantics-of-cross-site-cookies
+URL: https://w3c.github.io/webappsec-standardizing-security-semantics-of-cross-site-cookies/
 Editor:
     Dylan Cutler, Google, dylancutler@google.com
     Artur Janc, Google, aaj@google.com
